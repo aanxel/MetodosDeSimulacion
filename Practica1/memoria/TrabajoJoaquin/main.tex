@@ -1,0 +1,80 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lachaise Assignment
+% LaTeX Template
+% Version 1.0 (26/6/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Marion Lachaise & François Févotte
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{titling}
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\newcommand\course{\emph{Máster Universitario en Inteligencia Artificial \\ Seminario de Metodología de la Investigación}}
+
+\title{Resumen de S1: Metodología de la Investigación} % Title of the assignment
+
+\author{Joaquín Jiménez López de Castro --- \texttt{jo.jimenez@alumnos.upm.es}} % Author name and email address
+
+%----------------------------------------------------------------------------------------
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+
+\begin{document}
+
+\onlytitle
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Primera Sesión}
+
+La trayectoria de un investigador suele comenzar con una etapa como doctorando en una empresa o grupo de investigación, posiblemente en un ámbito internacional, y que dura entre tres y cinco años aproximadamente. El doctorado termina al elaborar y defender una tesis doctoral sobre un tema novedoso y de interés para el ámbito de investigación.
+
+Realizar la tesis es una labor compleja y requiere planificación para imprevistos, como afirmaciones que acaben siendo falsas o falta de tiempo; establecimiento y seguimiento de objetivos; y reunirse periódicamente con el supervisor. Una forma de elegir el tema a investigar para la tesis doctoral es que sea una ampliación o esté relacionado con el tema del Trabajo de Fin de Máster. Es conveniente elegir un buen supervisor para realizar el doctorado, con experiencia en el tema a investigar y con un buen historial como supervisor. El doctorado en Inteligencia Artificial en la UPM es una buena opción para los alumnos de este Máster que quieran dedicarse a la investigación, destacando las numerosas actividades y talleres que incluye y su reputación internacional.
+
+Al finalizar el doctorado, se suele pasar a un puesto de investigación en la industria, o, a investigar como posdoctorado junior; con posibles becas en España respectivamente como \emph{Torres Quevedo} y \emph{Juan de la Cierva}. Si se avanza como posdoctorado junior, normalmente se pasaría a ser investigador senior, y finalmente, profesor (un puesto que a su vez tiene su propia trayectoria). Los resultados de la labor de un investigador se suelen utilizar para la publicación de artículos, libros, llevarse a congresos; en proyectos de investigación e innovación (públicos o privados); e incluso para la explotación, generalmente mediante \emph{start ups}, patentes y licencias.
+
+La labor de un investigador sigue un ciclo de investigación, que comienza con un experimento científico, incluyendo su trasfondo, hipótesis, suposiciones, datos de entrada y un método; que produce datos, a los que se les hace una interpretación de carácter científico, y que se suele transmitir a través de publicaciones. Estas publicaciones son revisadas por otros investigadores para verificar su corrección, en el caso de las revistas científicas y conferencias. Los experimentos también siguen un ciclo, que empieza con la definición de un problema, el diseño del experimento, la búsqueda de otras investigaciones que se puedan modificar para aplicar en el experimento, y finalmente, la repetida modificación y ejecución del experimento, hasta que se obtengan resultados para publicar. En función de los resultados de intentar publicarlos, se volvería a la fase de buscar otras investigaciones de ayuda. Además, los experimentos pueden ser de varios tipos: controlados, estudios de caso, de encuestas, etnográficos y de acción. 
+
+La definición de un problema incluye varias componentes. Las \textbf{preguntas de investigación}, que determinan dónde y de qué tipo será la investigación a realizar, así como los objetivos específicos de la investigación; las \textbf{hipótesis de investigación}, que especulan sobre los resultados de una investigación o experimento, identificando qué declaración se demostraría o qué problema se resolvería. Una buena hipótesis de investigación se suele construir poco a poco, primero general, y cada vez más específica; y se formula de manera que sea comprobable de la forma menos ambigua posible, usando un experimento del tipo correcto. En la definición del problema se hacen también \textbf{suposiciones}, que son declaraciones que consideran un hecho verdadero; y se establecen \textbf{limitaciones}, que determinan el alcance de la investigación en un aspecto determinado.
+
+\section{Segunda Sesión}
+
+El mundo de la investigación está cambiando. Los artículos ahora van acompañados de software y datos auxiliares; cada vez más se tienen código y datos abiertos, acceso libre y se pueden leer artículos de forma gratuita; la comunidad científica usa redes sociales y repositorios dedicados a la investigación; las universidades dan más prioridad a la Informática; las editoras y financiadores están cambiando las pautas para los investigadores; los experimentos se están volviendo más difíciles de reproducir; y están apareciendo formatos que mezclan artículos con software. Por ello se recomienda que las nuevas publicaciones cumplan con los principios FAIR: que se puedan encontrar, acceder, que los datos sean interoperables, y que sean reutilizables.
+
+Para que el software se pueda encontrar y acceder fácilmente, se deben seguir los principios de \emph{open science}, almacenando los datos y software en repositorios públicos con identificadores únicos y con las licencias apropiadas para que se puedan usar libremente. Para que sean reproducibles, se deben proveer los datos y software necesarios, así como describir correctamente el flujo de trabajo que siguen, y para cada resultado, su procedencia, indicada como una instancia del seguimiento del flujo de trabajo. Finalmente, para lograr la interoperabilidad, se deben usar procedimientos estándar para citar y describir los metadatos.
+
+En la práctica, algunos ejemplos de repositorios de datos son \emph{Zenodo}, o \emph{Pangaea}, y otros de software son \emph{GitHub}, o \emph{SourceForge}. Utilizar estos repositorios facilita el acceso y búsqueda de datos, así como su identificación, que debería hacerse mediante DOI o PURL, y permite a los autores indicar cómo quieren que se citen. Alternativamente, el software puede publicarse en repositorios de datos o página web propia. Tanto datos como software deberían ir acompañados de licencias permisivas, como la MIT, y de metadatos mínimos, como los descritos por \href{http://www.ontosoft.org/software}{OntoSoft}. Además, para que el código funcione de forma consistente en distintos entornos, deberían describirse correctamente las dependencias y usarse técnicas de virtualización como contenedores o máquinas virtuales. Para describir el flujo de trabajo computacional, se pueden usar sistemas como \emph{Pegasus}, o cuadernos electrónicos, como \emph{Jupyter Notebook}, o mediante diagramas con un vocabulario estándar, como el \href{https://es.wikipedia.org/wiki/Dublin_Core}{Dublin Core} y siguiendo el estándar \href{https://www.w3.org/TR/prov-overview/}{W3C PROV}.
+
+\section{Tercera Sesión}
+
+Para realizar búsquedas de temas de investigación, conviene utilizar herramientas bibliográficas. \emph{ISI Web of Science} y \emph{Scopus} permiten realizar búsquedas complejas, pero están limitados al acceso desde una institución y según país de acceso. \emph{Google Scholar} indexa muchos más artículos que las anteriores, pero a cambio incluye artículos no revisados. En \emph{arxiv}, se pueden archivar toda clase publicaciones, pero estas no se revisan, por lo que es un buen lugar para ver las nuevas tendencias de investigación de algunos temas, pero no para partir de resultados fiables. \emph{ORCID} permite crear identificadores únicos de investigadores, útiles para metadatos. Finalmente, existen redes sociales como \emph{Research Gate}.
+
+Los trabajos de investigación, pueden publicarse en revistas, libros, talleres de trabajo y conferencias. Los talleres de trabajo son buenos para obtener retroalimentación de trabajos inmaduros. Las revistas científicas se usan para publicar trabajos sólidos, y debería intentarse que estas tengan un alto índice de citas. Si las conferencias son de alto nivel, pueden llegar a tener mayor importancia (pueden encontrarse con CORE) que las revistas. Aunque la cantidad de citas y artículos publicados se siguen utilizando para medir la calidad de un investigador, cada vez más se valora los riesgos que toma, que su trabajo sea \emph{Open Science} e innovador, y, que contribuya a la sostenibilidad.
+
+Un Estado del Arte, debería proveer una visión comprensiva de discusiones anteriores del tema a investigar. Para ello, debería seguirse un método riguroso, sin sesgos y repetible, analizando las evidencias existentes relacionadas con el tema de investigación. Los pasos básicos consisten en la definición del objetivo de la investigación. Después, la investigación utilizando una metodología bien documentada de artículos relevantes al tema y escritos por investigadores reputados, identificando cuáles están más especializados en el tema a investigar. Finalmente, el resumen de los artículos, relacionándolos con el artículo a escribir, y dando la visión del investigador.
+
+Los trabajos de un investigador, deberían ir acompañados de una licencia adecuada. Un software puede ser \emph{Open Source} si tiene licencias como CC-BY-SA, u otras más restrictas como GPL, que obliga a que el código que la utiliza use la misma licencia. Para conservar la propiedad intelectual, existen medidas como el copyright, que afecta por defecto al software, o las patentes, que afectan al software solamente si este tiene efectos técnicos. En la práctica, las empresas se apoyan en el copyright para proteger su código y bases de datos.   
+
+\end{document}
