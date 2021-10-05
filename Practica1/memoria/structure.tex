@@ -36,10 +36,32 @@
 \usepackage[ruled]{algorithm2e} % Algorithms
 
 \usepackage[framemethod=tikz]{mdframed} % Allows defining custom boxed/framed environments
-
 \usepackage{listings} % File listings, with syntax highlighting
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
 \lstset{
-	basicstyle=\ttfamily, % Typeset listings in monospace font
+	style=mystyle, % Typeset listings in monospace font
 }
 
 %----------------------------------------------------------------------------------------
@@ -236,7 +258,7 @@
 	\end{mdframed}
 }
 
-\usepackage{xcolor}
+
 \usepackage{fancyhdr}
 % Header
 \pagestyle{fancy}
@@ -244,10 +266,9 @@
 \headheight 70pt
 \lhead{
     \course
-    \\ \color{white} whitespace \\ whitespace \\ \color{black}
-    \theauthor
+	\vspace{10pt}
 }
-\rhead{\includegraphics[width=4cm]{logo.png} \\ \today}
+\rhead{\includegraphics[width=4cm]{logo.png}}
 \headsep 1.5em
 
 % Footer

@@ -7,7 +7,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 smarsa_BirthdaySpacings test:
@@ -21,7 +21,7 @@ smarsa_BirthdaySpacings test:
 
 ----------------------------------------------------
 Total expected number = N*Lambda      :      27.11
-Total observed number                 : 4987287
+Total observed number                 : 4987268
 p-value of test                       :   eps      *****
 
 
@@ -29,7 +29,7 @@ p-value of test                       :   eps      *****
 CPU time used                    :  00:00:00.66
 
 Generator state:
- s = 1010556658
+ s = 1389532321
 
 
 
@@ -40,7 +40,7 @@ Test sknuth_Collision calling smultin_Multinomial
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 smultin_Multinomial test:
@@ -60,15 +60,15 @@ smultin_Multinomial test:
 Test Results for Collisions
 
 Expected number of collisions = Mu    :     2909.25
-Observed number of collisions         :     5736
+Observed number of collisions         :     5646
 p-value of test                       :   eps      *****
 
 -----------------------------
 Total number of cells containing j balls
 
-  j =  0                              :       4289973032
-  j =  1                              :          4988528
-  j =  2                              :             5736
+  j =  0                              :       4289972942
+  j =  1                              :          4988708
+  j =  2                              :             5646
   j =  3                              :                0
   j =  4                              :                0
   j =  5                              :                0
@@ -77,7 +77,7 @@ Total number of cells containing j balls
 CPU time used                    :  00:00:00.87
 
 Generator state:
- s = 100944024
+ s = 67296016
 
 
 
@@ -85,7 +85,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 sknuth_Gap test:
@@ -95,14 +95,14 @@ sknuth_Gap test:
 
 -----------------------------------------------
 Number of degrees of freedom          : 1114
-Chi-square statistic                  : 1109.61
-p-value of test                       :    0.53
+Chi-square statistic                  : 1134.83
+p-value of test                       :    0.33
 
 -----------------------------------------------
-CPU time used                    :  00:00:00.56
+CPU time used                    :  00:00:00.57
 
 Generator state:
- s = 1105183232
+ s = 1128993281
 
 
 
@@ -110,7 +110,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 sknuth_SimpPoker test:
@@ -120,14 +120,14 @@ sknuth_SimpPoker test:
 
 -----------------------------------------------
 Number of degrees of freedom          :   19
-Chi-square statistic                  :   24.44
-p-value of test                       :    0.18
+Chi-square statistic                  :   18.25
+p-value of test                       :    0.51
 
 -----------------------------------------------
 CPU time used                    :  00:00:00.43
 
 Generator state:
- s = 414298926
+ s = 1882142636
 
 
 
@@ -135,7 +135,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 sknuth_CouponCollector test:
@@ -145,14 +145,14 @@ sknuth_CouponCollector test:
 
 -----------------------------------------------
 Number of degrees of freedom          :   44
-Chi-square statistic                  :   42.95
-p-value of test                       :    0.52
+Chi-square statistic                  :   41.99
+p-value of test                       :    0.56
 
 -----------------------------------------------
-CPU time used                    :  00:00:00.39
+CPU time used                    :  00:00:00.37
 
 Generator state:
- s = 1329213820
+ s = 799734172
 
 
 
@@ -160,7 +160,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 sknuth_MaxOft test:
@@ -173,20 +173,20 @@ sknuth_MaxOft test:
 
 -----------------------------------------------
 Number of degrees of freedom          : 99999
-Chi-square statistic                  : 2.73e+5
+Chi-square statistic                  : 2.70e+5
 p-value of test                       :   eps      *****
 
 
 -----------------------------------------------
-Anderson-Darling statistic            :    0.35
-p-value of test                       :    0.65
+Anderson-Darling statistic            :    0.27
+p-value of test                       :    0.73
 
 
 -----------------------------------------------
-CPU time used                    :  00:00:00.37
+CPU time used                    :  00:00:00.35
 
 Generator state:
- s = 26850515
+ s = 1138573672
 
 
 
@@ -194,7 +194,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 svaria_WeightDistrib test:
@@ -204,14 +204,14 @@ svaria_WeightDistrib test:
 
 -----------------------------------------------
 Number of degrees of freedom          :   41
-Chi-square statistic                  :   47.96
-p-value of test                       :    0.21
+Chi-square statistic                  :   56.91
+p-value of test                       :    0.05
 
 -----------------------------------------------
 CPU time used                    :  00:00:00.54
 
 Generator state:
- s = 364712602
+ s = 1113601794
 
 
 
@@ -219,7 +219,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 smarsa_MatrixRank test:
@@ -229,14 +229,14 @@ smarsa_MatrixRank test:
 
 -----------------------------------------------
 Number of degrees of freedom          :    3
-Chi-square statistic                  :    2.24
-p-value of test                       :    0.52
+Chi-square statistic                  :    0.34
+p-value of test                       :    0.95
 
 -----------------------------------------------
 CPU time used                    :  00:00:00.33
 
 Generator state:
- s = 1663417947
+ s = 1092640751
 
 
 
@@ -244,7 +244,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 sstring_HammingIndep test:
@@ -256,14 +256,14 @@ sstring_HammingIndep test:
 Counters with expected numbers >= 10
 -----------------------------------------------
 Number of degrees of freedom          : 2209
-Chi-square statistic                  : 2134.49
-p-value of test                       :    0.87
+Chi-square statistic                  : 2220.40
+p-value of test                       :    0.43
 
 -----------------------------------------------
 CPU time used                    :  00:00:00.67
 
 Generator state:
- s = 1715593182
+ s = 1061686888
 
 
 
@@ -271,7 +271,7 @@ Generator state:
 ***********************************************************
 HOST = PC-AANXEL, Linux
 
-ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 3
+ulcg_CreateLCG:   m = 2147483647,   a = 16807,   c = 0,   s = 2
 
 
 swalk_RandomWalk1 test:
@@ -284,47 +284,47 @@ swalk_RandomWalk1 test:
 Test on the values of the Statistic H
 
 Number of degrees of freedom          :   52
-ChiSquare statistic                   :   60.84
-p-value of test                       :    0.19
+ChiSquare statistic                   :   64.71
+p-value of test                       :    0.11
 
 
 -----------------------------------------------
 Test on the values of the Statistic M
 
 Number of degrees of freedom          :   52
-ChiSquare statistic                   :   64.35
-p-value of test                       :    0.12
+ChiSquare statistic                   :   65.36
+p-value of test                       :    0.10
 
 
 -----------------------------------------------
 Test on the values of the Statistic J
 
 Number of degrees of freedom          :   75
-ChiSquare statistic                   :   63.37
-p-value of test                       :    0.83
+ChiSquare statistic                   :   51.01
+p-value of test                       :    0.98
 
 
 -----------------------------------------------
 Test on the values of the Statistic R
 
 Number of degrees of freedom          :   44
-ChiSquare statistic                   :   57.00
-p-value of test                       :    0.09
+ChiSquare statistic                   :   38.20
+p-value of test                       :    0.72
 
 
 -----------------------------------------------
 Test on the values of the Statistic C
 
 Number of degrees of freedom          :   26
-ChiSquare statistic                   :   43.79
-p-value of test                       :    0.02
+ChiSquare statistic                   :   21.79
+p-value of test                       :    0.70
 
 
 -----------------------------------------------
 CPU time used                    :  00:00:00.46
 
 Generator state:
- s = 711258482
+ s = 897512292
 
 
 
@@ -335,7 +335,7 @@ Generator state:
  Version:          TestU01 1.2.3
  Generator:        ulcg_CreateLCG
  Number of statistics:  15
- Total CPU time:   00:00:05.34
+ Total CPU time:   00:00:05.29
  The following tests gave p-values outside [0.001, 0.9990]:
  (eps  means a value < 1.0e-300):
  (eps1 means a value < 1.0e-15):
@@ -350,4 +350,4 @@ Generator state:
 
 
 
-Nuestra semilla: 3
+Nuestra semilla: 2

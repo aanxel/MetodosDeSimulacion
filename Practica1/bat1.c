@@ -1,4 +1,3 @@
-#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "ulcg.h"
@@ -13,7 +12,7 @@
 #define C 0
 #define DEFAULT_SEED 559079219
 
-int main (char* argv[], int argc)
+int main (int argc, char* argv[])
 {
    int seed = (argc > 1) ?  atoi(argv[1]) : DEFAULT_SEED;
    unif01_Gen *gen;

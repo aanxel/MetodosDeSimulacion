@@ -1,0 +1,9 @@
+\contentsline {subsection}{Copyright}{ii}{}%
+\contentsline {subsection}{fmass}{1}{}%
+\contentsline {subsection}{fdist}{5}{}%
+\contentsline {subsection}{wdist}{15}{}%
+\contentsline {subsection}{fbar}{16}{}%
+\contentsline {subsection}{finv}{20}{}%
+\contentsline {subsection}{gofs}{24}{}%
+\contentsline {subsection}{gofw}{29}{}%
+\contentsline {subsection}{statcoll}{35}{}%

@@ -1,0 +1,177 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.3.24)  5 OCT 2021 11:00
+entering extended mode
+**d:/OneDrive/Sincronizacion/Academico/UPM/MetodosDeSimulacion/Practica1/TestU01-1.2.3/probdist/guideprobdist.tex
+(d:/OneDrive/Sincronizacion/Academico/UPM/MetodosDeSimulacion/Practica1/TestU01-1.2.3/probdist/guideprobdist.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18> (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo
+File: size12.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
+)
+\c@part=\count179
+\c@section=\count180
+\c@subsection=\count181
+\c@subsubsection=\count182
+\c@paragraph=\count183
+\c@subparagraph=\count184
+\c@figure=\count185
+\c@table=\count186
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+) (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+) (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+ (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks15
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (../doc/myarticle.sty (../doc/lmac.tex
+\eqlab=\box47
+)) (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+File: l3backend-pdftex.def 2021-03-02 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count187
+\l__pdf_internal_box=\box48
+) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\guideprobdist.aux (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\titre.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\copyright.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\fmass.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\fdist.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\wdist.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\fbar.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\finv.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\gofs.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\gofw.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\statcoll.aux))
+\openout1 = `guideprobdist.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+\openout2 = `titre.aux'.
+
+ (titre.tex [1
+
+
+{C:/Users/joaqu/AppData/Local/MiKTeX/pdftex/config/pdftex.map}])
+\openout2 = `copyright.aux'.
+
+ (copyright.tex
+LaTeX Font Info:    Trying to load font information for U+msa on input line 6.
+ (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 6.
+ (C:\Users\joaqu\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)) [1
+
+
+
+] (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\guideprobdist.toc)
+\tf@toc=\write3
+\openout3 = `guideprobdist.toc'.
+
+ [2
+
+
+]
+\openout2 = `fmass.aux'.
+
+ (fmass.tex [1
+
+
+] [2] [3]) [4]
+\openout2 = `fdist.aux'.
+
+ (fdist.tex [5
+
+
+
+] [6] [7] [8] [9] [10] [11] [12] [13]) [14]
+\openout2 = `wdist.aux'.
+
+ (wdist.tex) [15
+
+
+
+]
+\openout2 = `fbar.aux'.
+
+ (fbar.tex [16
+
+
+
+] [17]
+
+LaTeX Warning: Citation `LECz09' on page 18 undefined on input line 200.
+
+[18]
+Overfull \hbox (1.12335pt too wide) in paragraph at lines 279--284
+ \OT1/cmr/m/n/10.95 us-ing the struc-ture \OT1/cmtt/m/n/10.95 W \OT1/cmr/m/n/10.95 which must have been cre-ated pre-vi-ously by call-ing \OT1/cmtt/m/n/10.95 fmass_CreateBinomial
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 325--365
+ 
+ []
+
+) [19]
+\openout2 = `finv.aux'.
+
+ (finv.tex [20
+
+
+
+] [21] [22]) [23]
+\openout2 = `gofs.aux'.
+
+ (gofs.tex [24
+
+
+
+] [25] [26] [27]) [28]
+\openout2 = `gofw.aux'.
+
+ (gofw.tex [29
+
+
+
+] [30] [31] [32]
+Overfull \hbox (5.95757pt too wide) in paragraph at lines 419--431
+ \OT1/cmtt/m/n/10.95 sVal[gofw_Mean]\OT1/cmr/m/n/10.95 , and \OT1/cmtt/m/n/10.95 1 - U[1] \OT1/cmr/m/n/10.95 in \OT1/cmtt/m/n/10.95 sVal[gofw_KSP], pVal[gofw_KSP]\OT1/cmr/m/n/10.95 , and \OT1/cmtt/m/n/10.95 pVal[gofw_Mean]\OT1/cmr/m/n/10.95 . 
+ []
+
+[33]) [34]
+\openout2 = `statcoll.aux'.
+
+ (statcoll.tex [35
+
+
+
+]) [36] (guideprobdist.bbl [37
+
+
+] [38]) [39] (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\guideprobdist.aux (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\titre.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\copyright.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\fmass.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\fdist.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\wdist.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\fbar.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\finv.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\gofs.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\gofw.aux) (d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\statcoll.aux)) ) 
+Here is how much of TeX's memory you used:
+ 1326 strings out of 479324
+ 23383 string characters out of 2856815
+ 311178 words of memory out of 3000000
+ 18744 multiletter control sequences out of 15000+600000
+ 414059 words of font info for 67 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 52i,15n,60p,270b,273s stack positions out of 5000i,500n,10000p,200000b,80000s
+ <C:\Users\joaqu\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/joaqu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on d:/OneDrive\Sincronizacion\Academico\UPM\MetodosDeSimulacion\Practica1\TestU01-1.2.3\probdist\out\guideprobdist.pdf (42 pages, 376385 bytes).
+PDF statistics:
+ 223 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

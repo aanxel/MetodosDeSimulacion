@@ -6,7 +6,7 @@
 % This template originates from:
 % http://www.LaTeXTemplates.com
 %
-% Authors:
+% Authors: 
 % Marion Lachaise & François Févotte
 % Vel (vel@LaTeXTemplates.com)
 %
@@ -23,58 +23,258 @@
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{titling}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{csquotes}
+\usepackage[style=authoryear,giveninits=true, uniquename=init, maxcitenames=2, natbib]{biblatex}
+\usepackage[citecolor=blue]{hyperref}
 
 %----------------------------------------------------------------------------------------
 %	ASSIGNMENT INFORMATION
 %----------------------------------------------------------------------------------------
 
-\newcommand\course{\emph{Máster Universitario en Inteligencia Artificial \\ Seminario de Metodología de la Investigación}}
+\newcommand\course{\emph{Máster Universitario en Inteligencia Artificial \\ Métodos de Simulación}}
 
-\title{Resumen de S1: Metodología de la Investigación} % Title of the assignment
+\title{Enunciado 1 - Generación de Números y Variables Aleatorias} % Title of the assignment
 
-\author{Joaquín Jiménez López de Castro --- \texttt{jo.jimenez@alumnos.upm.es}} % Author name and email address
+\author{
+        \normalsize Joaquín Jiménez López de Castro --- \texttt{jo.jimenez@alumnos.upm.es}\\
+        \normalsize Alejandro Sánchez de Castro Fernández --- \texttt{alejandro.sanchezdecastro.fernandez@alumnos.upm.es}\\
+        \normalsize Ángel Fragua Baeza --- \texttt{angel.fragua@alumnos.upm.es}
+}
 
 %----------------------------------------------------------------------------------------
 
 \input{structure.tex} % Include the file specifying the document structure and custom commands
+\renewcommand{\lstlistingname}{Código}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclareNameAlias{sortname}{family-given}
+\addbibresource{main.bib}
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{citetitle}{#1\isdot}
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,patent,thesis,unpublished]{title}{#1\isdot}
 
 
 \begin{document}
 
-\onlytitle
+\maketitle
 
-%----------------------------------------------------------------------------------------
-%	INTRODUCTION
-%----------------------------------------------------------------------------------------
+\thispagestyle{empty}
 
-\section{Primera Sesión}
+\newpage
 
-La trayectoria de un investigador suele comenzar con una etapa como doctorando en una empresa o grupo de investigación, posiblemente en un ámbito internacional, y que dura entre tres y cinco años aproximadamente. El doctorado termina al elaborar y defender una tesis doctoral sobre un tema novedoso y de interés para el ámbito de investigación.
+\pagenumbering{arabic}
 
-Realizar la tesis es una labor compleja y requiere planificación para imprevistos, como afirmaciones que acaben siendo falsas o falta de tiempo; establecimiento y seguimiento de objetivos; y reunirse periódicamente con el supervisor. Una forma de elegir el tema a investigar para la tesis doctoral es que sea una ampliación o esté relacionado con el tema del Trabajo de Fin de Máster. Es conveniente elegir un buen supervisor para realizar el doctorado, con experiencia en el tema a investigar y con un buen historial como supervisor. El doctorado en Inteligencia Artificial en la UPM es una buena opción para los alumnos de este Máster que quieran dedicarse a la investigación, destacando las numerosas actividades y talleres que incluye y su reputación internacional.
+\section{Introducción}
 
-Al finalizar el doctorado, se suele pasar a un puesto de investigación en la industria, o, a investigar como posdoctorado junior; con posibles becas en España respectivamente como \emph{Torres Quevedo} y \emph{Juan de la Cierva}. Si se avanza como posdoctorado junior, normalmente se pasaría a ser investigador senior, y finalmente, profesor (un puesto que a su vez tiene su propia trayectoria). Los resultados de la labor de un investigador se suelen utilizar para la publicación de artículos, libros, llevarse a congresos; en proyectos de investigación e innovación (públicos o privados); e incluso para la explotación, generalmente mediante \emph{start ups}, patentes y licencias.
+En esta práctica se pretende tomar contacto con algunas estrategias para probar la eficacia de generadores de números aleatorios. En concreto, se desea probar la eficacia de un generador congruencial multiplicativo de IMSL. Para ello, se utilizará la librería \emph{TestU01} \citep{Simard2013ASL}, que contiene herramientas para implementar y probar la eficacia de generadores de números aleatorios. Después se analizarán algunos de los contrastes empleados por la librería.
 
-La labor de un investigador sigue un ciclo de investigación, que comienza con un experimento científico, incluyendo su trasfondo, hipótesis, suposiciones, datos de entrada y un método; que produce datos, a los que se les hace una interpretación de carácter científico, y que se suele transmitir a través de publicaciones. Estas publicaciones son revisadas por otros investigadores para verificar su corrección, en el caso de las revistas científicas y conferencias. Los experimentos también siguen un ciclo, que empieza con la definición de un problema, el diseño del experimento, la búsqueda de otras investigaciones que se puedan modificar para aplicar en el experimento, y finalmente, la repetida modificación y ejecución del experimento, hasta que se obtengan resultados para publicar. En función de los resultados de intentar publicarlos, se volvería a la fase de buscar otras investigaciones de ayuda. Además, los experimentos pueden ser de varios tipos: controlados, estudios de caso, de encuestas, etnográficos y de acción. 
+En la \autoref{sec:imp}, se explicará como se ha implementado y probado el generador de IMSL en la librería \emph{TestU01}. En la \autoref{sec:anal} se explicarán brevemente tres de los métodos que usa \emph{TestU01} para comprobar la eficacia del generador. Finalmente en la \autoref{sec:conc} se harán unas conclusiones del trabajo realizado.
 
-La definición de un problema incluye varias componentes. Las \textbf{preguntas de investigación}, que determinan dónde y de qué tipo será la investigación a realizar, así como los objetivos específicos de la investigación; las \textbf{hipótesis de investigación}, que especulan sobre los resultados de una investigación o experimento, identificando qué declaración se demostraría o qué problema se resolvería. Una buena hipótesis de investigación se suele construir poco a poco, primero general, y cada vez más específica; y se formula de manera que sea comprobable de la forma menos ambigua posible, usando un experimento del tipo correcto. En la definición del problema se hacen también \textbf{suposiciones}, que son declaraciones que consideran un hecho verdadero; y se establecen \textbf{limitaciones}, que determinan el alcance de la investigación en un aspecto determinado.
+\section{Implementación}
+\label{sec:imp}
 
-\section{Segunda Sesión}
+Para la implementación de la práctica se ha usado una librería desarrollada en C llamada \emph{TestU01}. En esta librería se encuentran implementados algunos de los generadores de números aleatorios más típicos junto con una serie de baterías de tests para comprobar si realmente son aleatorios o no.
+Para poder comenzar a usar esta librería se debe de seguir un proceso de descarga e instalación que se encuentra perfectamente explicado en su \href{http://simul.iro.umontreal.ca/testu01/install.html}{guía}.
 
-El mundo de la investigación está cambiando. Los artículos ahora van acompañados de software y datos auxiliares; cada vez más se tienen código y datos abiertos, acceso libre y se pueden leer artículos de forma gratuita; la comunidad científica usa redes sociales y repositorios dedicados a la investigación; las universidades dan más prioridad a la Informática; las editoras y financiadores están cambiando las pautas para los investigadores; los experimentos se están volviendo más difíciles de reproducir; y están apareciendo formatos que mezclan artículos con software. Por ello se recomienda que las nuevas publicaciones cumplan con los principios FAIR: que se puedan encontrar, acceder, que los datos sean interoperables, y que sean reutilizables.
+Como para cualquier programa desarrollado en C, hemos generado un pequeño \emph{Makefile} (véase Código \ref{cod:makefile}) que nos permite agilizar el proceso de compilación y ejecución.
 
-Para que el software se pueda encontrar y acceder fácilmente, se deben seguir los principios de \emph{open science}, almacenando los datos y software en repositorios públicos con identificadores únicos y con las licencias apropiadas para que se puedan usar libremente. Para que sean reproducibles, se deben proveer los datos y software necesarios, así como describir correctamente el flujo de trabajo que siguen, y para cada resultado, su procedencia, indicada como una instancia del seguimiento del flujo de trabajo. Finalmente, para lograr la interoperabilidad, se deben usar procedimientos estándar para citar y describir los metadatos.
+\begin{lstlisting}[language=C, escapechar=¿, caption={Makefile del programa}, label={cod:makefile}]
+all: program
 
-En la práctica, algunos ejemplos de repositorios de datos son \emph{Zenodo}, o \emph{Pangaea}, y otros de software son \emph{GitHub}, o \emph{SourceForge}. Utilizar estos repositorios facilita el acceso y búsqueda de datos, así como su identificación, que debería hacerse mediante DOI o PURL, y permite a los autores indicar cómo quieren que se citen. Alternativamente, el software puede publicarse en repositorios de datos o página web propia. Tanto datos como software deberían ir acompañados de licencias permisivas, como la MIT, y de metadatos mínimos, como los descritos por \href{http://www.ontosoft.org/software}{OntoSoft}. Además, para que el código funcione de forma consistente en distintos entornos, deberían describirse correctamente las dependencias y usarse técnicas de virtualización como contenedores o máquinas virtuales. Para describir el flujo de trabajo computacional, se pueden usar sistemas como \emph{Pegasus}, o cuadernos electrónicos, como \emph{Jupyter Notebook}, o mediante diagramas con un vocabulario estándar, como el \href{https://es.wikipedia.org/wiki/Dublin_Core}{Dublin Core} y siguiendo el estándar \href{https://www.w3.org/TR/prov-overview/}{W3C PROV}.
+program:                                                    ¿\label{linea:compile}¿
+    gcc bat1.c -o bat1 -ltestu01 -lprobdist -lmylib -lm
 
-\section{Tercera Sesión}
+run:                                                        ¿\label{linea:execute}¿
+ifndef SEED
+    ./bat1
+else
+    ./bat1 $(SEED) > results/seed-$(SEED).txt
+endif
 
-Para realizar búsquedas de temas de investigación, conviene utilizar herramientas bibliográficas. \emph{ISI Web of Science} y \emph{Scopus} permiten realizar búsquedas complejas, pero están limitados al acceso desde una institución y según país de acceso. \emph{Google Scholar} indexa muchos más artículos que las anteriores, pero a cambio incluye artículos no revisados. En \emph{arxiv}, se pueden archivar toda clase publicaciones, pero estas no se revisan, por lo que es un buen lugar para ver las nuevas tendencias de investigación de algunos temas, pero no para partir de resultados fiables. \emph{ORCID} permite crear identificadores únicos de investigadores, útiles para metadatos. Finalmente, existen redes sociales como \emph{Research Gate}.
+.EXPORT_ALL_VARIABLES:                                      ¿\label{linea:exportvariables}¿
+LD_LIBRARY_PATH = /usr/local/lib
+LIBRARY_PATH = /usr/local/lib
+C_INCLUDE_PATH = /usr/local/include
+\end{lstlisting}
 
-Los trabajos de investigación, pueden publicarse en revistas, libros, talleres de trabajo y conferencias. Los talleres de trabajo son buenos para obtener retroalimentación de trabajos inmaduros. Las revistas científicas se usan para publicar trabajos sólidos, y debería intentarse que estas tengan un alto índice de citas. Si las conferencias son de alto nivel, pueden llegar a tener mayor importancia (pueden encontrarse con CORE) que las revistas. Aunque la cantidad de citas y artículos publicados se siguen utilizando para medir la calidad de un investigador, cada vez más se valora los riesgos que toma, que su trabajo sea \emph{Open Science} e innovador, y, que contribuya a la sostenibilidad.
 
-Un Estado del Arte, debería proveer una visión comprensiva de discusiones anteriores del tema a investigar. Para ello, debería seguirse un método riguroso, sin sesgos y repetible, analizando las evidencias existentes relacionadas con el tema de investigación. Los pasos básicos consisten en la definición del objetivo de la investigación. Después, la investigación utilizando una metodología bien documentada de artículos relevantes al tema y escritos por investigadores reputados, identificando cuáles están más especializados en el tema a investigar. Finalmente, el resumen de los artículos, relacionándolos con el artículo a escribir, y dando la visión del investigador.
+Dentro de este \emph{Makefile} caben destacar ciertos detalles. En la línea \ref{cod:makefile}.\ref{linea:compile} se establece la dependencia encargada de compilar el programa usando el típico programa \emph{gcc} añadiendole al final las librerías específicas de \emph{TestU01}. En cuanto a la línea \ref{cod:makefile}.\ref{linea:execute} incluye la dependencia para la ejecución del programa. Si esta dependencia se llama sin ningún argumento, ejecutará el programa haciendo uso de una semilla por defecto establecida en el programa, en cambio si se ejecuta acompañado de un argumento este se usará como semilla, guardando el output del programa en un archivo. Como la librería \emph{TestU01} requiere de unas variables de sesión para la compilación, estas han sido añadidas al \emph{Makefile} como un \emph{target} tal y como se puede observar en la línea \ref{cod:makefile}.\ref{linea:exportvariables}.
 
-Los trabajos de un investigador, deberían ir acompañados de una licencia adecuada. Un software puede ser \emph{Open Source} si tiene licencias como CC-BY-SA, u otras más restrictas como GPL, que obliga a que el código que la utiliza use la misma licencia. Para conservar la propiedad intelectual, existen medidas como el copyright, que afecta por defecto al software, o las patentes, que afectan al software solamente si este tiene efectos técnicos. En la práctica, las empresas se apoyan en el copyright para proteger su código y bases de datos.   
+Todo el código necesario para llevar a cabo la generación de números aleatorios utilizando el generador congruencial multiplicativo de IMSL junto con el estudio de aleatoriedad se encuentra contenido en el archivo \emph{bat1.c} tal y como se muestra en el Código \ref{cod:bat1.c}.
+
+\begin{lstlisting}[language=C, escapechar=¿,caption={bat1.c}, label={cod:bat1.c}]
+#include <stdlib.h>
+#include <stdio.h>
+#include "ulcg.h"
+#include "gdef.h"
+#include "unif01.h"
+#include "bbattery.h"
+
+#define M 2147483647                                        ¿\label{linea:m}¿
+#define A 16807                                             ¿\label{linea:a}¿
+#define C 0                                                 ¿\label{linea:c}¿
+#define DEFAULT_SEED 559079219                              ¿\label{linea:seed}¿
+
+int main (int argc, char* argv[])
+{
+    int seed = (argc > 1) ?  atoi(argv[1]) : DEFAULT_SEED;
+    unif01_Gen *gen;
+    gen = ulcg_CreateLCG (M, A, C, seed);                   ¿\label{linea:gencreation}¿
+    bbattery_SmallCrush (gen);
+    ulcg_DeleteGen (gen);
+
+    printf("Nuestra semilla: %d\n", seed);
+
+    return 0;
+}
+
+\end{lstlisting}
+
+
+\subsection{Generador de números}
+En esta práctica se ha usado un generado congruencial, tratándose de uno de los generadores más populares. Este tipo de generadores fueron introducidos por \citet{Lehm51}, y siguen la función recursiva siguiente:
+\begin{equation*}
+    x_{n+1} = (ax_n+b) \mod m
+\end{equation*}
+
+Esta función genera números de forma aleatoria entre $[0,m)$, siendo $a$ un multiplicador, "b" un sesgo, $m$ el módulo y $x_0$ la semilla inicial. En la práctica se solicitaba hacer uso del generador congruencial multiplicativo de IMSL siguiendo la siguiente fórmula:
+\begin{equation*}
+    x_{n+1} = (16807x_n) \mod (2^{31}-1)
+\end{equation*}
+
+Para tener el código bien organizado se han declarado una serie de constantes. En la línea \ref{cod:bat1.c}.\ref{linea:m} se establece el valor del módulo $m$ pero una vez hecha la operación $2^{31}-1=2147483647$. En la línea \ref{cod:bat1.c}.\ref{linea:a} se establece el multiplicador $a$. En la línea \ref{cod:bat1.c}.\ref{linea:c} se establece el sesgo $b$, que como ya se ha mencionado ha de ser $0$, ya que se trata de un generador congruencial multiplicativo. Finalmente, en la línea \ref{cod:bat1.c}.\ref{linea:seed} se establece una semilla inicial (generada de forma aleatoria), para el caso de que el programa no reciba una semilla como argumento a la hora de ejecutarse.
+
+Para crear el generador, la librería incluye una función llamada \emph{ulcg\_CreateLCG}, tal y como se puede observar en la línea \ref{cod:bat1.c}.\ref{linea:gencreation}, a la que se le pasan los parámetros típicos mencionados previamente. Esta función tiene la peculiaridad de que en vez de devolver los valores en el rango $[0, m)$ los devuelve en el rango $[0,1)$ tal y como se nos solicitaba en el enunciado.
+
+\subsection{Batería de contrastes}
+
+Para este trabajo se va a ejecutar la batería de contrastes más sencilla, \textit{bbattery\_SmallCrush}. Cabe decir que algunos de los contrastes asumen que la muestra de números tiene al menos 30 bits de precisión, en caso de no ser así es altamente probable que fallen estos contrastes.
+
+En la batería se aplican los siguientes contrastes:
+
+\begin{enumerate}
+    \item smarsa\_BirthdaySpacings con $N = 1, n = 5 \times 106, r = 0, d = 230, t = 2, p = 1$.
+    \item sknuth\_Collision con $N = 1, n = 5 \times 106, r = 0, d = 216, t = 2$.
+    \item sknuth\_Gap con $N = 1, n = 2 \times 105, r = 22, \alpha = 0, \beta = \frac{1}{256}$.
+    \item sknuth\_SimpPoker con $N = 1, n = 4 \times 105, r = 24, d = 64, k = 64$.
+    \item sknuth\_CouponCollector con $N = 1, n = 5 \times 105, r = 26, d = 16$.
+    \item sknuth\_MaxOft con $N = 1, n = 2 \times 106, r = 0, d = 105, t = 6$.
+    \item svaria\_WeightDistrib con $N = 1, n = 2 \times 105, r = 27, k = 256, \alpha = 0, \beta= \frac{1}{8}$.
+    \item smarsa\_MatrixRank con $N = 1, n = 20000, r = 20, s = 10, L = k = 60$.
+    \item sstring\_HammingIndep con $N = 1, n = 5 \times 105, r = 20, s = 10, L = 300, d = 0$.
+    \item swalk\_RandomWalk1 con $N = 1, n = 106, r = 0, s = 30, L0 = 150, L1 = 150$.
+\end{enumerate}
+
+Para comprobar la aleatoriedad del generador se han usado seis semillas para generar diferentes secuencias de números: $559079219$, $4$, $3$, $2$, $1$ y $0$. 
+Se han sometido estas seis muestras de números a la batería de tests para comprobar el efecto de las semillas sobre el generador.
+Como era de esperar, la semilla $0$ no pasa ningún contraste. En cuanto al resto de semillas hay tres contrastes que siempre fallan:
+
+\begin{lstlisting}
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        ulcg_CreateLCG
+ Number of statistics:  15
+ Total CPU time:   00:00:05.37
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  1  BirthdaySpacings                 eps  
+  2  Collision                        eps  
+  6  MaxOft                           eps  
+ ----------------------------------------------
+ All other tests were passed
+\end{lstlisting}
+
+Por lo que se entiende que el generador, por su naturaleza e independientemente de la semilla, no es capaz de pasar ninguno de estos contrastes.
+
+\section{Análisis de contrastes}
+
+\label{sec:anal}
+
+\subsection{Contraste Máximo-de-t}
+
+El contraste está descrito en \citet{knuth2014art}. Dada una muestra de números \(U=\{U_1,U_2,...U_n\}\), teniendo \(U_i \in (0, 1)\) para cualquier \(i\), sirve para rechazar la hipótesis de que \(U\) sigue una distribución uniforme en \((0,1)\). El procedimiento consiste dividir \(U\) en \(m=\floor*{\frac{n}{t}}\) \emph{clusters} \(C=\{C_1,...,C_m\}\), con \(C_j=\{U_{jt},U_{jt+1},...,U_{jt+t-1}\}\) con \(t\ge1, j=1,...,m\). Se obtiene \(V=\{\max(C_1),...,\max(C_m)\}=\{V_1,...V_m\}\). La hipótesis se rechaza si el test de Kolmogorov-Smirnov rechaza la hipótesis de que \(V\) tiene \(F(x)=x^t, 0\le x\le 1\) como función de distribución.
+
+El motivo es que si \(U\) sigue una distribución uniforme, entonces:
+
+\begin{align*}
+    F(x)=P(V_j \le x)&=\\
+                &=P(\max(\{U_{jt},U_{jt+1},...,U_{jt+t-1}\})\le x)=\\
+                &=P(U_{jt}\le x)P(U_{jt+1}\le x)...P(U_{jt+t-1}\le x)=xx...x=x^t
+\end{align*}
+
+Este contraste admite variaciones. Una implícita es el parámetro \(t\), donde si \(t=1\), se tiene una mera comprobación de que los valores de \(U\) son uniformes. En la librería \emph{TestU01} se usa \(t=6\). También se puede intercambiar el test de Kolmogorov-Smirnov por el contraste \(\chi^2\), que es lo que hace \emph{TestU01}.
+
+Es sencillo plantear una muestra que pase el test y tenga un patrón fácilmente observable, pero la utilidad de este contraste reside en rechazar generadores de números aleatorios, no en aceptarlos.
+
+\subsection{Collision}
+
+Este contraste también se encuentra en \citet{knuth2014art}. Para entender correctamente el test de \emph{Collision}, podemos imaginarlo como un juego, en el que tenemos \textbf{m} urnas y \textbf{n} bolas que lanzamos de forma aleatoria. Para que este test tenga validez, se ha de cumplir que \textbf{m} es mucho mayor que n. Al ser \textbf{m} mucho mayor que \textbf{n}, lo más probable es que la mayoría de bolas entren en una urna vacía. Si se da el caso de que la urna ya tenía al menos una bola, se considera que se ha producido una colisión. El test de \emph{Collision} cuenta el número total de colisiones producidas, y si este no es ni demasiado grande ni demasiado pequeño el generador superará el test. 
+
+Partiendo de unos conocimientos básicos de estadística, podemos saber que la probabilidad de que una urna tenga \textbf{k} bolas es de:
+\begin{equation*}
+    p_k = 
+    \begin{pmatrix}
+        n\\
+        k
+    \end{pmatrix}
+    m^{-k}(1-m^{-1})^{n-k}
+\end{equation*}
+
+Partiendo de la fórmula anterior, se puede calcular cuál es el número estimado de colisiones por urna.
+\begin{equation*}
+    \sum_{k>=1}(k-1)p_k = \sum_{k>=0}kp_k-\sum_{k>=1}p_k = \frac{n}{m}-1+p_0 
+\end{equation*}
+
+Sabiendo cuál es el número estimado de colisiones por urna, se puede calcular fácilmente el número de colisiones totales estimadas. Para ello basta con multiplicar el número estimado de colisiones por urna, por el número total de urnas. Esta cuenta es algo costosa, puesto que la probabilidad de que una urna tenga $0$ bolas $p_0 = (1-m^{-1})^n = 1-nm^{-1}+\binom{n}{2}m^{-2}-t\acute{e}rminos\;menores$ ya es de por sí costosa computacionalmente hablando. Por ello, para calcular el número total estimado de colisiones se suele usar la fórmula $\frac{n^2}{2m}$, la cual es menos costosa computacionalmente hablando y siempre da unos resultados ligeramente superiores a los exactos.
+
+La potencia de este contraste se base en su capacidad para medir colisiones en múltiples dimensiones. Para ello basta con trocear la muestra inicial en vectores del mismo tamaño que número de dimensiones queramos usar en el test. Cada uno de estos vectores se usará para indexar una tabla de bits de  tamaño \textbf{m}. Esta tabla se encontrará inicializada con todo ceros, y en el momento en el que se acceda a una posición cualquiera si hay un $0$ se le transforma en $1$, y si ya hay un $1$ esto significa que ya se ha visitado esa posición, por lo que se mantiene el $1$ y se incrementa en uno el número de colisiones.
+
+En la librería \emph{TestU01} la función encargada de llevar a cabo este contraste sería \emph{sknuth\_Collision}, cuya implementación se basa en otro test llamado \emph{power divergence}. Este otro contraste está implementado por la función \emph{smultin\_Multinomial}, en donde uno de sus parámetros llamado \emph{Sparse} permite que sus parámetros $n$ y $k$ sean muy grandes, lo cual hará que el número de urnas sea muy grande requisito principal del \emph{Collision test}.
+
+\subsection{Birthday spacings}
+
+Este contraste fue propuesto por \citet{Marsaglia19853}. Se asume la premisa de que, en un conjunto de números ordenados escogidos de forma aleatoria, la distribución asintótica del número de valores duplicados entre los espacios de los números es Poisson con media $\lambda=\frac{m^3}{4n}$
+
+Es decir, se parte de una muestra \textit{$U = \{U_1,U_2,...,U_n\}$} de tamaño \textit{m}, llamada cumpleaños. Los elementos de esta muestra tomarán valores entre $[0, n)$, siendo \textit{n} el tamaño del espacio sobre el que se generan los elementos de la muestra; también se conoce a \textit{n} como año. Esta muestra \textit{U} se ordena de forma ascendente y se toman las diferencias entre los elementos consecutivos de forma $x_{j+1}-x_j$  tal que $1 < j < m$ de la muestra para calcular los espacios. Estos espacios se almacenan en otra muestra \textit{$K = \{K_1,K_2,...,K_n\}$} que vuelve a ordenarse para contar el número de colisiones, o lo que es lo mismo, la cantidad de valores duplicados. Esta cantidad de colisiones debe ajustarse al valor de $\lambda$. Este proceso se repite hasta obtener una muestra de $5000$ valores de colisiones. Por último, se aplica una bondad de ajuste $\sum \frac{2(observado-esperado)}{esperado}$ y ese valor se pasa a la función de distribución \textit{chi-cuadrado} adecuada para obtener el p-valor y rechazar o no la hipótesis H0: “El número de colisiones es aproximadamente una variable aleatoria de Poisson con media igual a $\lambda$”. 
+
+No hay estudios teóricos sólidos que encuentren $m$ y $n$ óptimos, pero sí hay generaciones de números aleatorios que cumplen esta regla de forma satisfactoria.  Así como tampoco hay estudios concluyentes sobre el tamaño que debe tener \textit{n} para poder comparar los resultados con la distribución de Poisson con media $\lambda$, pero la experiencia marca que para poder aplicar estar regla \textit{n} debe ser al menos $2^{18}$.  
+
+Para fallar este test el p-valor debe ser próximo a $0$, pero fallar una vez es condición necesaria pero no suficiente. Para comprobar si un generador falla en este test es necesario probar con distintas semillas y ver si el p-valor difiere en órdenes de magnitud. Si un generador falla una vez con una semilla $x_i$ con un p-valor de $5x10^{-10}$ y con otra semilla $x_j$ falla con $5x10^{-6}$ no puede afirmarse que el generador haya fallado el test. En cambio, si falla las dos veces con p-valor $5x10^{-10}$ puede afirmarse que el generador no ha pasado el test \citet{mccullough_2006}. Este es uno de los test más difíciles de pasar, si un conjunto pasa este test es muy probable que pase todos los demás. 
+
+En cuanto a la implementación, la librería \emph{TestU01} ofrece la función \textit{smarsa\_BirthdaySpacings} para poder ejecutar esta prueba individualmente. La función incluye los siguientes parámetros: 
+\begin{enumerate}
+    \item[] $N$ $\rightarrow$ Cantidad de veces que se repite el test sobre muestras de datos distintas del mismo conjunto de número aleatorios. 
+    \item[] $n$ $\rightarrow$ Número de “cumpleaños”. Tamaño de la muestra que se escoge del conjunto de números. 
+    \item[] $d$ $\rightarrow$ Tamaño del espacio. 
+    \item[] $t$ $\rightarrow$ Número de dimensiones del espacio. 
+    \item[] $p$ $\rightarrow$ Forma de ordenar el espacio. Puede tomar valores en $[1,2]$. 
+    \item[] $r$ $\rightarrow$ Toma valores entre $[0,b]$ siendo $b$ el número de bits que tiene el conjunto números aleatorios. Según este valor se ignoran los $r$ bits más significantes del conjunto de número aleatorios. 
+\end{enumerate}
+
+En el caso de este trabajo se ha utilizado la batería de pruebas \textit{bbattery\_SmallCrush} en el que se ejecuta \textit{smarsa\_BirthdaySpacings} con unos valores concretos de sus parámetros. Estos valores son: 
+
+\begin{enumerate}
+    \item[] $N$ $\rightarrow$ $1$
+    \item[] $n$ $\rightarrow$ $5x10^{-10}$
+    \item[] $d$ $\rightarrow$ $2^{30}$
+    \item[] $t$ $\rightarrow$ $2$
+    \item[] $p$ $\rightarrow$ $1$
+    \item[] $r$ $\rightarrow$ $0$
+\end{enumerate}
+
+\section{Conclusión}
+\label{sec:conc}
+
+En esta práctica se ha podido utilizar una librería de test de generadores de números aleatorios para comprobar la eficacia del generador congruencial multiplicativo de IMSL. Para ello, se ha pasado la batería de contrastes pequeña y tres tests han rechazado el generador como adecuado. Se han escogido estos tres contrastes para ser analizados y explicados brevemente.
+
+Se concluye que el generador, aunque puede servir para algunos propósitos básicos, no es adecuado para funcionalidades más exigentes, como la criptografía.
+
+\printbibliography
 
 \end{document}
