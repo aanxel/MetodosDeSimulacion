@@ -6,3 +6,4 @@ clusters
 sknuthCollision
 congruencial
 IMSL
+congruenciales

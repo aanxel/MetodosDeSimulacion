@@ -38,9 +38,9 @@
 \title{Enunciado 1 - Generación de Números y Variables Aleatorias} % Title of the assignment
 
 \author{
-        \normalsize Joaquín Jiménez López de Castro --- \texttt{jo.jimenez@alumnos.upm.es}\\
-        \normalsize Alejandro Sánchez de Castro Fernández --- \texttt{alejandro.sanchezdecastro.fernandez@alumnos.upm.es}\\
-        \normalsize Ángel Fragua Baeza --- \texttt{angel.fragua@alumnos.upm.es}
+        \normalsize Joaquín Jiménez López de Castro --- \small\texttt{jo.jimenez@alumnos.upm.es}\\
+        \normalsize Alejandro Sánchez de Castro Fernández --- \small\texttt{alejandro.sanchezdecastro.fernandez@alumnos.upm.es}\\
+        \normalsize Ángel Fragua Baeza --- \small\texttt{angel.fragua@alumnos.upm.es}
 }
 
 %----------------------------------------------------------------------------------------
@@ -71,37 +71,63 @@ En esta práctica se pretende tomar contacto con algunas estrategias para probar
 
 En la \autoref{sec:imp}, se explicará como se ha implementado y probado el generador de IMSL en la librería \emph{TestU01}. En la \autoref{sec:anal} se explicarán brevemente tres de los métodos que usa \emph{TestU01} para comprobar la eficacia del generador. Finalmente en la \autoref{sec:conc} se harán unas conclusiones del trabajo realizado.
 
-\section{Implementación}
+\section{Desarrollo}
 \label{sec:imp}
 
-Para la implementación de la práctica se ha usado una librería desarrollada en C llamada \emph{TestU01}. En esta librería se encuentran implementados algunos de los generadores de números aleatorios más típicos junto con una serie de baterías de tests para comprobar si realmente son aleatorios o no.
-Para poder comenzar a usar esta librería se debe de seguir un proceso de descarga e instalación que se encuentra perfectamente explicado en su \href{http://simul.iro.umontreal.ca/testu01/install.html}{guía}.
+\subsection{Definición del problema}
 
-Como para cualquier programa desarrollado en C, hemos generado un pequeño \emph{Makefile} (véase Código \ref{cod:makefile}) que nos permite agilizar el proceso de compilación y ejecución.
+Los generadores congruenciales fueron introducidos por \citet{Lehm51}, y tienen una definición recursiva a partir del último número generado:
+
+\begin{equation*}
+    x_{n+1} = (ax_n) \mod m
+\end{equation*}
+
+Esta función genera números de forma aleatoria entre $[0,m)$, siendo $a$ un multiplicador, $b$ un sesgo, $m$ el módulo y $x_0$ la semilla inicial, donde si $b=0$, se denomina generador congruencial multiplicativo. En la práctica se quiere probar la eficacia del generador congruencial multiplicativo de IMSL, que tiene la siguiente definición:
+
+\begin{equation*}
+    x_{n+1} = (16807x_n) \mod (2^{31}-1)
+\end{equation*}
+
+Para ello, se quieren usar los contrastes de una librería desarrollada en C llamada \emph{TestU01}. En esta librería se encuentran implementados algunos de los generadores de números aleatorios más típicos junto con una serie de baterías de tests. 
+
+\subsection{Implementación}
+
+Para poder usar la librería \emph{TestU01} se debe de seguir un proceso de descarga e instalación que se encuentra perfectamente explicado en su \href{http://simul.iro.umontreal.ca/testu01/install.html}{guía}.
+
+Una vez instalada la librería, se puede utilizar el fichero \emph{Makefile} que se ve en el Código \ref{cod:makefile} para compilar y ejecutar el programa principal que probará el generador congruencial multiplicativo de IMSL.
 
 \begin{lstlisting}[language=C, escapechar=¿, caption={Makefile del programa}, label={cod:makefile}]
 all: program
 
-program:                                                    ¿\label{linea:compile}¿
+program:
     gcc bat1.c -o bat1 -ltestu01 -lprobdist -lmylib -lm
 
-run:                                                        ¿\label{linea:execute}¿
+run:
 ifndef SEED
     ./bat1
 else
     ./bat1 $(SEED) > results/seed-$(SEED).txt
 endif
 
-.EXPORT_ALL_VARIABLES:                                      ¿\label{linea:exportvariables}¿
+.EXPORT_ALL_VARIABLES:
 LD_LIBRARY_PATH = /usr/local/lib
 LIBRARY_PATH = /usr/local/lib
 C_INCLUDE_PATH = /usr/local/include
 \end{lstlisting}
 
+Este fichero \emph{Makefile} permite ejecutar las siguientes funcionalidades:
 
-Dentro de este \emph{Makefile} caben destacar ciertos detalles. En la línea \ref{cod:makefile}.\ref{linea:compile} se establece la dependencia encargada de compilar el programa usando el típico programa \emph{gcc} añadiendole al final las librerías específicas de \emph{TestU01}. En cuanto a la línea \ref{cod:makefile}.\ref{linea:execute} incluye la dependencia para la ejecución del programa. Si esta dependencia se llama sin ningún argumento, ejecutará el programa haciendo uso de una semilla por defecto establecida en el programa, en cambio si se ejecuta acompañado de un argumento este se usará como semilla, guardando el output del programa en un archivo. Como la librería \emph{TestU01} requiere de unas variables de sesión para la compilación, estas han sido añadidas al \emph{Makefile} como un \emph{target} tal y como se puede observar en la línea \ref{cod:makefile}.\ref{linea:exportvariables}.
+\begin{commandline}
+	\begin{verbatim}
+        Compilar el programa:
+		$ make
+        Ejecutar la batería de tests sobre el generador multiplicativo de
+        IMSL, especificando opcionalmente una semilla para el generador:
+		$ make run [SEED=n]
+	\end{verbatim}
+\end{commandline}
 
-Todo el código necesario para llevar a cabo la generación de números aleatorios utilizando el generador congruencial multiplicativo de IMSL junto con el estudio de aleatoriedad se encuentra contenido en el archivo \emph{bat1.c} tal y como se muestra en el Código \ref{cod:bat1.c}.
+Todo el código necesario para llevar a cabo la generación de números aleatorios utilizando el generador congruencial multiplicativo de IMSL junto con el estudio de aleatoriedad se encuentra contenido en el archivo \emph{bat1.c}, que se muestra en el Código \ref{cod:bat1.c}.
 
 \begin{lstlisting}[language=C, escapechar=¿,caption={bat1.c}, label={cod:bat1.c}]
 #include <stdlib.h>
@@ -131,25 +157,13 @@ int main (int argc, char* argv[])
 
 \end{lstlisting}
 
+Se han declarado una serie de constantes. En la Línea \ref{cod:bat1.c}.\ref{linea:m} se establece el valor del módulo $m$ a $2^{31}-1=2147483647$. En la línea \ref{cod:bat1.c}.\ref{linea:a} se establece el multiplicador $a$. En la línea \ref{cod:bat1.c}.\ref{linea:c} se establece el sesgo $b$, que como ya se ha mencionado ha de ser $0$. Finalmente, en la línea \ref{cod:bat1.c}.\ref{linea:seed} se establece un valor de semilla por defecto.
 
-\subsection{Generador de números}
-En esta práctica se ha usado un generado congruencial, tratándose de uno de los generadores más populares. Este tipo de generadores fueron introducidos por \citet{Lehm51}, y siguen la función recursiva siguiente:
-\begin{equation*}
-    x_{n+1} = (ax_n+b) \mod m
-\end{equation*}
-
-Esta función genera números de forma aleatoria entre $[0,m)$, siendo $a$ un multiplicador, "b" un sesgo, $m$ el módulo y $x_0$ la semilla inicial. En la práctica se solicitaba hacer uso del generador congruencial multiplicativo de IMSL siguiendo la siguiente fórmula:
-\begin{equation*}
-    x_{n+1} = (16807x_n) \mod (2^{31}-1)
-\end{equation*}
-
-Para tener el código bien organizado se han declarado una serie de constantes. En la línea \ref{cod:bat1.c}.\ref{linea:m} se establece el valor del módulo $m$ pero una vez hecha la operación $2^{31}-1=2147483647$. En la línea \ref{cod:bat1.c}.\ref{linea:a} se establece el multiplicador $a$. En la línea \ref{cod:bat1.c}.\ref{linea:c} se establece el sesgo $b$, que como ya se ha mencionado ha de ser $0$, ya que se trata de un generador congruencial multiplicativo. Finalmente, en la línea \ref{cod:bat1.c}.\ref{linea:seed} se establece una semilla inicial (generada de forma aleatoria), para el caso de que el programa no reciba una semilla como argumento a la hora de ejecutarse.
-
-Para crear el generador, la librería incluye una función llamada \emph{ulcg\_CreateLCG}, tal y como se puede observar en la línea \ref{cod:bat1.c}.\ref{linea:gencreation}, a la que se le pasan los parámetros típicos mencionados previamente. Esta función tiene la peculiaridad de que en vez de devolver los valores en el rango $[0, m)$ los devuelve en el rango $[0,1)$ tal y como se nos solicitaba en el enunciado.
+Para crear el generador, se puede usar el tipo \emph{ulcg\_CreateLCG}, que provee la librería, tal y como se puede observar en la línea \ref{cod:bat1.c}.\ref{linea:gencreation}, a la que se le pasan los parámetros mencionados. Este generador normaliza los valores al rango $[0,1)$, puesto que busca crear una distribución uniforme.
 
 \subsection{Batería de contrastes}
 
-Para este trabajo se va a ejecutar la batería de contrastes más sencilla, \textit{bbattery\_SmallCrush}. Cabe decir que algunos de los contrastes asumen que la muestra de números tiene al menos 30 bits de precisión, en caso de no ser así es altamente probable que fallen estos contrastes.
+En esta práctica se va a ejecutar la batería de contrastes básica de la librería, \textit{bbattery\_SmallCrush}. Cabe decir que algunos de los contrastes asumen que la muestra de números tiene al menos 30 bits de precisión, en caso de no ser así es altamente probable que fallen estos contrastes.
 
 En la batería se aplican los siguientes contrastes:
 
@@ -168,7 +182,7 @@ En la batería se aplican los siguientes contrastes:
 
 Para comprobar la aleatoriedad del generador se han usado seis semillas para generar diferentes secuencias de números: $559079219$, $4$, $3$, $2$, $1$ y $0$. 
 Se han sometido estas seis muestras de números a la batería de tests para comprobar el efecto de las semillas sobre el generador.
-Como era de esperar, la semilla $0$ no pasa ningún contraste. En cuanto al resto de semillas hay tres contrastes que siempre fallan:
+Como era de esperar, si se usa la semilla $0$, todos los contrastes rechazan el generador, pues solamente genera ceros. Para el resto de semillas, siempre se cumple que solo rechazan los mismos tres contrastes:
 
 \begin{lstlisting}
 ========= Summary results of SmallCrush =========
@@ -190,7 +204,7 @@ Como era de esperar, la semilla $0$ no pasa ningún contraste. En cuanto al rest
  All other tests were passed
 \end{lstlisting}
 
-Por lo que se entiende que el generador, por su naturaleza e independientemente de la semilla, no es capaz de pasar ninguno de estos contrastes.
+Estos tres contrastes se analizarán en detalle en la siguiente sección.
 
 \section{Análisis de contrastes}
 
@@ -198,7 +212,7 @@ Por lo que se entiende que el generador, por su naturaleza e independientemente 
 
 \subsection{Contraste Máximo-de-t}
 
-El contraste está descrito en \citet{knuth2014art}. Dada una muestra de números \(U=\{U_1,U_2,...U_n\}\), teniendo \(U_i \in (0, 1)\) para cualquier \(i\), sirve para rechazar la hipótesis de que \(U\) sigue una distribución uniforme en \((0,1)\). El procedimiento consiste dividir \(U\) en \(m=\floor*{\frac{n}{t}}\) \emph{clusters} \(C=\{C_1,...,C_m\}\), con \(C_j=\{U_{jt},U_{jt+1},...,U_{jt+t-1}\}\) con \(t\ge1, j=1,...,m\). Se obtiene \(V=\{\max(C_1),...,\max(C_m)\}=\{V_1,...V_m\}\). La hipótesis se rechaza si el test de Kolmogorov-Smirnov rechaza la hipótesis de que \(V\) tiene \(F(x)=x^t, 0\le x\le 1\) como función de distribución.
+El contraste está descrito en \citet{knuth2014art}. Dada una muestra de números \(U=\{U_1,U_2,...U_n\}\), teniendo \(U_i \in (0, 1)\) para cualquier \(i\), sirve para rechazar la hipótesis de que \(U\) sigue una distribución uniforme en \((0,1)\). El procedimiento consiste dividir \(U\) en \(m=\floor*{\frac{n}{t}}\) \emph{clusters} \(C=\{C_1,...,C_m\}\), con \(C_j=\{U_{jt},U_{jt+1},...,U_{jt+t-1}\}\) y \(t\ge1, j=1,...,m\) \footnote{No hay que generar explícitamente los \emph{clusters}, se utilizan como recurso para explicar el funcionamiento del contraste.}. Se obtiene \(V=\{\max(C_1),...,\max(C_m)\}=\{V_1,...V_m\}\). La hipótesis se rechaza si el test de Kolmogorov-Smirnov rechaza la hipótesis de que \(V\) tiene \(F(x)=x^t, 0\le x\le 1\) como función de distribución.
 
 El motivo es que si \(U\) sigue una distribución uniforme, entonces:
 
@@ -214,9 +228,9 @@ Es sencillo plantear una muestra que pase el test y tenga un patrón fácilmente
 
 \subsection{Collision}
 
-Este contraste también se encuentra en \citet{knuth2014art}. Para entender correctamente el test de \emph{Collision}, podemos imaginarlo como un juego, en el que tenemos \textbf{m} urnas y \textbf{n} bolas que lanzamos de forma aleatoria. Para que este test tenga validez, se ha de cumplir que \textbf{m} es mucho mayor que n. Al ser \textbf{m} mucho mayor que \textbf{n}, lo más probable es que la mayoría de bolas entren en una urna vacía. Si se da el caso de que la urna ya tenía al menos una bola, se considera que se ha producido una colisión. El test de \emph{Collision} cuenta el número total de colisiones producidas, y si este no es ni demasiado grande ni demasiado pequeño el generador superará el test. 
+Este contraste también se encuentra en \citet{knuth2014art}. Para entender correctamente el test de \emph{Collision}, podemos imaginarlo como un juego, en el que tenemos $m$ urnas y $n$ bolas que lanzamos de forma aleatoria. Si $m$ es mucho mayor que $n$, lo más probable es que la mayoría de bolas entren en una urna vacía. Si se da el caso de que la urna ya tenía al menos una bola, se considera que se ha producido una colisión. El test de \emph{Collision} cuenta el número total de colisiones producidas, y si este no es ni demasiado grande, ni demasiado pequeño, el generador superará el test. 
 
-Partiendo de unos conocimientos básicos de estadística, podemos saber que la probabilidad de que una urna tenga \textbf{k} bolas es de:
+Utilizando combinatoria básica, se puede deducir que la probabilidad de que una urna tenga $k$ bolas es de:
 \begin{equation*}
     p_k = 
     \begin{pmatrix}
@@ -231,21 +245,21 @@ Partiendo de la fórmula anterior, se puede calcular cuál es el número estimad
     \sum_{k>=1}(k-1)p_k = \sum_{k>=0}kp_k-\sum_{k>=1}p_k = \frac{n}{m}-1+p_0 
 \end{equation*}
 
-Sabiendo cuál es el número estimado de colisiones por urna, se puede calcular fácilmente el número de colisiones totales estimadas. Para ello basta con multiplicar el número estimado de colisiones por urna, por el número total de urnas. Esta cuenta es algo costosa, puesto que la probabilidad de que una urna tenga $0$ bolas $p_0 = (1-m^{-1})^n = 1-nm^{-1}+\binom{n}{2}m^{-2}-t\acute{e}rminos\;menores$ ya es de por sí costosa computacionalmente hablando. Por ello, para calcular el número total estimado de colisiones se suele usar la fórmula $\frac{n^2}{2m}$, la cual es menos costosa computacionalmente hablando y siempre da unos resultados ligeramente superiores a los exactos.
+Sabiendo cuál es el número estimado de colisiones por urna, se puede calcular el número de colisiones totales estimadas. Para ello basta con multiplicar el número estimado de colisiones por urna por el número total de urnas. Esta cuenta es algo costosa, puesto que la probabilidad de que una urna tenga $0$ bolas $p_0 = (1-m^{-1})^n = 1-nm^{-1}+\binom{n}{2}m^{-2}-t\acute{e}rminos\;menores$ es costosa computacionalmente hablando. Por ello, el número de colisiones se suele estimar usando la fórmula $\frac{n^2}{2m}$.
 
-La potencia de este contraste se base en su capacidad para medir colisiones en múltiples dimensiones. Para ello basta con trocear la muestra inicial en vectores del mismo tamaño que número de dimensiones queramos usar en el test. Cada uno de estos vectores se usará para indexar una tabla de bits de  tamaño \textbf{m}. Esta tabla se encontrará inicializada con todo ceros, y en el momento en el que se acceda a una posición cualquiera si hay un $0$ se le transforma en $1$, y si ya hay un $1$ esto significa que ya se ha visitado esa posición, por lo que se mantiene el $1$ y se incrementa en uno el número de colisiones.
+La potencia de este contraste se basa en su capacidad para medir colisiones en múltiples dimensiones. Para ello basta con trocear la muestra inicial en vectores del mismo tamaño que número de dimensiones queramos usar en el test. Cada uno de estos vectores se usará para indexar una tabla de bits de  tamaño $m$. Esta tabla se encontrará inicializada con todo ceros, y en el momento en el que se acceda a una posición cualquiera si hay un $0$ se le transforma en $1$, y si ya hay un $1$ esto significa que ya se ha visitado esa posición, por lo que se mantiene el $1$ y se incrementa en uno el número de colisiones.
 
 En la librería \emph{TestU01} la función encargada de llevar a cabo este contraste sería \emph{sknuth\_Collision}, cuya implementación se basa en otro test llamado \emph{power divergence}. Este otro contraste está implementado por la función \emph{smultin\_Multinomial}, en donde uno de sus parámetros llamado \emph{Sparse} permite que sus parámetros $n$ y $k$ sean muy grandes, lo cual hará que el número de urnas sea muy grande requisito principal del \emph{Collision test}.
 
 \subsection{Birthday spacings}
 
-Este contraste fue propuesto por \citet{Marsaglia19853}. Se asume la premisa de que, en un conjunto de números ordenados escogidos de forma aleatoria, la distribución asintótica del número de valores duplicados entre los espacios de los números es Poisson con media $\lambda=\frac{m^3}{4n}$
+Este contraste fue propuesto por \citet{Marsaglia19853}. Parte de la premisa de que, en un conjunto de números ordenados escogidos de forma aleatoria, la distribución asintótica del número de valores duplicados entre los espacios de los números es Poisson con media $\lambda=\frac{m^3}{4n}$
 
-Es decir, se parte de una muestra \textit{$U = \{U_1,U_2,...,U_n\}$} de tamaño \textit{m}, llamada cumpleaños. Los elementos de esta muestra tomarán valores entre $[0, n)$, siendo \textit{n} el tamaño del espacio sobre el que se generan los elementos de la muestra; también se conoce a \textit{n} como año. Esta muestra \textit{U} se ordena de forma ascendente y se toman las diferencias entre los elementos consecutivos de forma $x_{j+1}-x_j$  tal que $1 < j < m$ de la muestra para calcular los espacios. Estos espacios se almacenan en otra muestra \textit{$K = \{K_1,K_2,...,K_n\}$} que vuelve a ordenarse para contar el número de colisiones, o lo que es lo mismo, la cantidad de valores duplicados. Esta cantidad de colisiones debe ajustarse al valor de $\lambda$. Este proceso se repite hasta obtener una muestra de $5000$ valores de colisiones. Por último, se aplica una bondad de ajuste $\sum \frac{2(observado-esperado)}{esperado}$ y ese valor se pasa a la función de distribución \textit{chi-cuadrado} adecuada para obtener el p-valor y rechazar o no la hipótesis H0: “El número de colisiones es aproximadamente una variable aleatoria de Poisson con media igual a $\lambda$”. 
+Es decir, se parte de una muestra $U = \{U_1,U_2,...,U_n\}$ de tamaño $m$, llamada cumpleaños. Los elementos de esta muestra tomarán valores entre $[0, n)$, siendtextito $n$ el tamaño del espacio sobre el que se generan los elementos de la muestra; también se conoce a $n$ como año. Esta muestra $U$ se ordena de forma ascendente y se toman las diferencias entre los elementos consecutivos de forma $x_{j+1}-x_j$ tal que $1 < j < m$ de la muestra para calcular los espacios. Estos espacios se almacenan en otra muestra $K = \{K_1,K_2,...,K_n\}$ que vuelve a ordenarse para contar el número de colisiones, o lo que es lo mismo, la cantidad de valores duplicados. Esta cantidad de colisiones debe ajustarse al valor de $\lambda$. Este proceso se repite hasta obtener una muestra de $5000$ valores de colisiones. Por último, se aplica una bondad de ajuste $\sum \frac{2(observado-esperado)}{esperado}$ y ese valor se contrasta usando la distribución \(\chi^2\) adecuada para obtener el $p$-valor y rechazar o no la hipótesis H0: “El número de colisiones es aproximadamente una variable aleatoria de Poisson con media igual a $\lambda$”. 
 
-No hay estudios teóricos sólidos que encuentren $m$ y $n$ óptimos, pero sí hay generaciones de números aleatorios que cumplen esta regla de forma satisfactoria.  Así como tampoco hay estudios concluyentes sobre el tamaño que debe tener \textit{n} para poder comparar los resultados con la distribución de Poisson con media $\lambda$, pero la experiencia marca que para poder aplicar estar regla \textit{n} debe ser al menos $2^{18}$.  
+No hay estudios teóricos sólidos que encuentren $m$ y $n$ óptimos, pero sí hay generaciones de números aleatorios que cumplen esta regla de forma satisfactoria. Así como tampoco hay estudios concluyentes sobre el tamaño que debe tener $n$ para poder comparar los resultados con la distribución de Poisson con media $\lambda$, pero la experiencia marca que para poder aplicar estar regla $n$ debe ser al menos $2^{18}$.  
 
-Para fallar este test el p-valor debe ser próximo a $0$, pero fallar una vez es condición necesaria pero no suficiente. Para comprobar si un generador falla en este test es necesario probar con distintas semillas y ver si el p-valor difiere en órdenes de magnitud. Si un generador falla una vez con una semilla $x_i$ con un p-valor de $5x10^{-10}$ y con otra semilla $x_j$ falla con $5x10^{-6}$ no puede afirmarse que el generador haya fallado el test. En cambio, si falla las dos veces con p-valor $5x10^{-10}$ puede afirmarse que el generador no ha pasado el test \citet{mccullough_2006}. Este es uno de los test más difíciles de pasar, si un conjunto pasa este test es muy probable que pase todos los demás. 
+Para fallar este test el $p$-valor debe ser próximo a $0$, pero fallar una vez es condición necesaria pero no suficiente. Para comprobar si un generador falla en este test es necesario probar con distintas semillas y ver si el $p$-valor difiere en órdenes de magnitud. Si un generador falla una vez con una semilla $x_i$ con un $p$-valor de $5x10^{-10}$ y con otra semilla $x_j$ falla con $5x10^{-6}$ no puede afirmarse que el generador haya fallado el test. En cambio, si falla las dos veces con p-valor $5x10^{-10}$ puede afirmarse que el generador no ha pasado el test \citet{mccullough_2006}. Este es uno de los test más difíciles de pasar, si un conjunto pasa este test es muy probable que pase todos los demás. 
 
 En cuanto a la implementación, la librería \emph{TestU01} ofrece la función \textit{smarsa\_BirthdaySpacings} para poder ejecutar esta prueba individualmente. La función incluye los siguientes parámetros: 
 \begin{enumerate}
