@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 from IPython.display import clear_output
 from simanneal.anneal import time_string
 import sys
-
+import math
 
 class NQueensBaseAnnealer(simanneal.Annealer):
-    def __init__(self, n_queens=7, load_state=None):
+    def __init__(self, n_queens=7, L=1, load_state=None):
         self.n_queens = n_queens
+        self.L = L
         super().__init__(initial_state=np.arange(n_queens),
                          load_state=load_state)
         self.reset_metrics()
@@ -47,9 +48,72 @@ class NQueensBaseAnnealer(simanneal.Annealer):
         if updates:
             self.updates = updates
         self.reset_metrics()
-        r = super().anneal()
+        ###
+        step = 0
+        self.start = time.time()
+
+        # Precompute factor for exponential cooling from Tmax to Tmin
+        if self.Tmin <= 0.0:
+            raise Exception('Exponential cooling requires a minimum "\
+                "temperature greater than zero.')
+        Tfactor = -math.log(self.Tmax / self.Tmin)
+        alfa = self.Tmax * math.exp(Tfactor / self.steps)
+
+        # Note initial state
+        T = self.Tmax
+        E = self.energy()
+        prevState = self.copy_state(self.state)
+        prevEnergy = E
+        self.best_state = self.copy_state(self.state)
+        self.best_energy = E
+        trials, accepts, improves = 0, 0, 0
+        if self.updates > 0:
+            updateWavelength = self.steps / self.updates
+            self.update(step, T, E, None, None)
+
+        # Attempt moves to new states
+        while step < self.steps and not self.user_exit:
+            step += 1
+            if step % self.L == 0:
+                T = self.Tmax * math.exp(Tfactor * step / self.steps)
+            dE = self.move()
+            if dE is None:
+                E = self.energy()
+                dE = E - prevEnergy
+            else:
+                E += dE
+            trials += 1
+            if dE > 0.0 and math.exp(-dE / T) < random.random():
+                # Restore previous state
+                self.state = self.copy_state(prevState)
+                E = prevEnergy
+            else:
+                # Accept new state and compare to best state
+                accepts += 1
+                if dE < 0.0:
+                    improves += 1
+                prevState = self.copy_state(self.state)
+                prevEnergy = E
+                if E < self.best_energy:
+                    self.best_state = self.copy_state(self.state)
+                    self.best_energy = E
+            if self.updates > 1:
+                if (step // updateWavelength) > ((step - 1) // updateWavelength):
+                    self.update(
+                        step, T, E, accepts / trials, improves / trials)
+                    trials, accepts, improves = 0, 0, 0
+
+            self.T_hist.append(T)
+            self.E_hist.append(E)
+
+        self.state = self.copy_state(self.best_state)
+        if self.save_state_on_exit:
+            self.save_state()
+
+        ###
         print()
-        return r
+        # Return best state and energy
+        return self.best_state, self.best_energy
 
     def plot_evolution(self):
         if len(self.T_hist) < 2:
@@ -68,26 +132,28 @@ class NQueensBaseAnnealer(simanneal.Annealer):
                 atr = metrics[i * 2 + j]
                 f_ax = fig.add_subplot(gs[i, j])
                 f_ax.set_title(f'{atr[1]}(iteraciones)')
-                if atr[1] == 'Energía':
-                    f_ax.set_ylim(ymax=max(self.E_hist[1:]) + 3)
-                    m_idx = np.argmin(self.E_hist)
-                    if self.best_energy != 0:
-                        f_ax.annotate(
-                            text='Mínimo',
-                            xy=(self.steps_hist[m_idx], self.E_hist[m_idx]),
-                            arrowprops=dict(facecolor='red', shrink=0.05),
-                        )
-                    else:
-                        f_ax.plot(self.steps_hist + [self.epochs],
-                                  atr[0] + [0], color='#1f77b4')
+                if atr[1] == 'Energía' or atr[1] == 'Temperatura':
+                    # f_ax.set_ylim(ymax=max(self.E_hist[1:]) + 3)
+                    # m_idx = np.argmin(self.E_hist)
+                    # if self.best_energy != 0:
+                    #     f_ax.annotate(
+                    #         text='Mínimo',
+                    #         xy=(self.steps_hist[m_idx], self.E_hist[m_idx]),
+                    #         arrowprops=dict(facecolor='red', shrink=0.05),
+                    #     )
+                    # else:
+                    #     f_ax.plot(self.steps_hist + [self.epochs],
+                    #               atr[0] + [0], color='#1f77b4')
+                    f_ax.plot(list(range(0, self.epochs)), atr[0])
+                    continue  
                 f_ax.plot(self.steps_hist, atr[0])
         plt.show()
         pass
 
     def default_update(self, step, T, E, acceptance, improvement):
         clear_output(wait=True)
-        self.T_hist.append(T)
-        self.E_hist.append(E)
+        # self.T_hist.append(T)
+        # self.E_hist.append(E)
         self.accept_hist.append(acceptance)
         self.improv_hist.append(improvement)
         self.steps_hist.append(step)
