@@ -57,7 +57,7 @@ class NQueensBaseAnnealer(simanneal.Annealer):
             raise Exception('Exponential cooling requires a minimum "\
                 "temperature greater than zero.')
         Tfactor = -math.log(self.Tmax / self.Tmin)
-        alfa = self.Tmax * math.exp(Tfactor / self.steps)
+        alfa = math.exp(Tfactor / self.steps)
 
         # Note initial state
         T = self.Tmax
@@ -75,7 +75,7 @@ class NQueensBaseAnnealer(simanneal.Annealer):
         while step < self.steps and not self.user_exit:
             step += 1
             if step % self.L == 0:
-                T = self.Tmax * math.exp(Tfactor * step / self.steps)
+                T = self.Tmax * alfa**step
             dE = self.move()
             if dE is None:
                 E = self.energy()
@@ -133,17 +133,6 @@ class NQueensBaseAnnealer(simanneal.Annealer):
                 f_ax = fig.add_subplot(gs[i, j])
                 f_ax.set_title(f'{atr[1]}(iteraciones)')
                 if atr[1] == 'Energía' or atr[1] == 'Temperatura':
-                    # f_ax.set_ylim(ymax=max(self.E_hist[1:]) + 3)
-                    # m_idx = np.argmin(self.E_hist)
-                    # if self.best_energy != 0:
-                    #     f_ax.annotate(
-                    #         text='Mínimo',
-                    #         xy=(self.steps_hist[m_idx], self.E_hist[m_idx]),
-                    #         arrowprops=dict(facecolor='red', shrink=0.05),
-                    #     )
-                    # else:
-                    #     f_ax.plot(self.steps_hist + [self.epochs],
-                    #               atr[0] + [0], color='#1f77b4')
                     f_ax.plot(list(range(0, self.epochs)), atr[0])
                     continue  
                 f_ax.plot(self.steps_hist, atr[0])
@@ -152,8 +141,6 @@ class NQueensBaseAnnealer(simanneal.Annealer):
 
     def default_update(self, step, T, E, acceptance, improvement):
         clear_output(wait=True)
-        # self.T_hist.append(T)
-        # self.E_hist.append(E)
         self.accept_hist.append(acceptance)
         self.improv_hist.append(improvement)
         self.steps_hist.append(step)
