@@ -8,6 +8,7 @@ simanneal = "*"
 matplotlib = "*"
 numpy = "*"
 ipywidgets = "*"
+seaborn = "*"
 
 [dev-packages]
 
