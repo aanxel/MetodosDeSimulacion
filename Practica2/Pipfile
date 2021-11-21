@@ -9,6 +9,7 @@ matplotlib = "*"
 numpy = "*"
 ipywidgets = "*"
 seaborn = "*"
+flake8 = "*"
 
 [dev-packages]
 

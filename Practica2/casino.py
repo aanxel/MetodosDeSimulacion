@@ -106,11 +106,12 @@ class SimCasino:
 class CasinoAnnealer(simanneal.Annealer):
     def __init__(self, initial_state=[1/7]*7, n_simulaciones=10000,
                  T_config={'L': 1}, stop_config={'p_acc': 0.1, 'k': 5},
-                 load_state=None):
+                 load_state=None, desplazamiento=0.2):
         self.T_config = T_config
         self.stop_config = stop_config
         self.n_simulaciones = n_simulaciones
         self.casino = SimCasino(n_dias=1, max_partidas=np.inf)
+        self.desplazamiento = desplazamiento  # Define tamaño del entorno
         super().__init__(initial_state=initial_state, load_state=load_state)
         self.T_configuration()
         self.reset_metrics()
@@ -129,20 +130,18 @@ class CasinoAnnealer(simanneal.Annealer):
     def energy(self):
         _, fichas, _ = self.casino.simular(n_simulaciones=self.n_simulaciones)
         # Número medio de fichas ganadas
-        return -sum([x*y for x, y in enumerate(fichas/self.casino.n_dias)])
+        res = -sum([x*y for x, y in enumerate(fichas/self.casino.n_dias)])
+        if res < -30:
+            print(fichas[150:])
+            exit()
+        return res
 
     def move(self):
         self.epochs += 1
-        desplazamiento = 0.2
-        a = random.randint(0, len(self.state) - 1)
-        resto_prob_prev = 1 - self.state[a]
+        a = np.random.randint(0, len(self.state))
         # Incrementamos una probabiliad un porcentaje 
-        self.state[a] *= (1 + random.uniform(-desplazamiento, desplazamiento))
-        resto_prob_new = 1 - self.state[a]
-        # Actualizamos el resto de forma proporcional
-        for i, p in enumerate(self.state):
-            if i != a:
-                p = p/resto_prob_prev * resto_prob_new
+        self.state[a] += np.random.uniform(0, self.desplazamiento)
+        self.state /= np.sum(self.state)
 
     def T_function(self):
         if self.epochs % self.T_config['L'] == 0:
@@ -221,7 +220,7 @@ class CasinoAnnealer(simanneal.Annealer):
                     self.best_state = self.copy_state(self.state)
                     self.best_energy = E
             if self.updates > 1:
-                if (step // updateWavelength) > ((step - 1) // updateWavelength):
+                if (step//updateWavelength) > ((step - 1)//updateWavelength):
                     self.update(
                         step, T, E, accepts / trials, improves / trials)
                     trials, accepts, improves = 0, 0, 0
@@ -260,7 +259,7 @@ class CasinoAnnealer(simanneal.Annealer):
                 f_ax.set_title(f'{atr[1]}(iteraciones)')
                 if atr[1] == 'Energía' or atr[1] == 'Temperatura':
                     f_ax.plot(list(range(0, self.epochs)), atr[0])
-                    continue  
+                    continue
                 f_ax.plot(self.steps_hist, atr[0])
         plt.show()
         pass
