@@ -110,7 +110,7 @@ class CasinoAnnealer(simanneal.Annealer):
         self.T_config = T_config
         self.stop_config = stop_config
         self.n_simulaciones = n_simulaciones
-        self.casino = SimCasino(n_dias=1, max_partidas=np.inf)
+        self.casino = SimCasino()
         self.desplazamiento = desplazamiento  # Define tamaño del entorno
         super().__init__(initial_state=initial_state, load_state=load_state)
         self.T_configuration()
@@ -131,16 +131,13 @@ class CasinoAnnealer(simanneal.Annealer):
         _, fichas, _ = self.casino.simular(n_simulaciones=self.n_simulaciones)
         # Número medio de fichas ganadas
         res = -sum([x*y for x, y in enumerate(fichas/self.casino.n_dias)])
-        if res < -30:
-            print(fichas[150:])
-            exit()
         return res
 
     def move(self):
         self.epochs += 1
         a = np.random.randint(0, len(self.state))
         # Incrementamos una probabiliad un porcentaje 
-        self.state[a] += np.random.uniform(0, self.desplazamiento)
+        self.state[a] = np.maximum(self.state[a] + np.random.uniform(-self.desplazamiento, self.desplazamiento), 0)
         self.state /= np.sum(self.state)
 
     def T_function(self):
