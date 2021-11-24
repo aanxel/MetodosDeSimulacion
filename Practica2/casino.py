@@ -120,6 +120,7 @@ class CasinoAnnealer(simanneal.Annealer):
         self.epochs = 0
         self.T_hist = []
         self.E_hist = []
+        self.best_E_hist = []
         self.accept_hist = []
         self.improv_hist = []
         self.steps_hist = []
@@ -155,6 +156,7 @@ class CasinoAnnealer(simanneal.Annealer):
         if self.epochs % (self.T_config['L'] * self.stop_config['k']) == 0:
             if self.stop_config['accepts'] / self.stop_config['trials'] < self.stop_config['p_acc']:
                 self.user_exit = True
+                print('Se ha cumplido el criterio de parada por convergencia')
             self.stop_config['trials'] = 0
             self.stop_config['accepts'] = 0
             self.stop_config['improves'] = 0
@@ -224,6 +226,7 @@ class CasinoAnnealer(simanneal.Annealer):
             ###
             self.T_hist.append(T)
             self.E_hist.append(E)
+            self.best_E_hist.append(self.best_energy)
             self.stop_criterion()
             ###
 
@@ -247,14 +250,17 @@ class CasinoAnnealer(simanneal.Annealer):
         fig.suptitle('Evolución del algoritmo')
         metrics = [(self.T_hist, 'Temperatura'),
                    (self.E_hist, 'Energía'),
+                   (self.best_E_hist, 'Mejor Energía'),
                    (self.accept_hist, 'Aceptación'),
-                   (self.improv_hist, 'Mejora')]
+                   # (self.improv_hist, 'Mejora')
+                   ]
         for i in range(2):
             for j in range(2):
                 atr = metrics[i * 2 + j]
                 f_ax = fig.add_subplot(gs[i, j])
                 f_ax.set_title(f'{atr[1]}(iteraciones)')
-                if atr[1] == 'Energía' or atr[1] == 'Temperatura':
+                if (atr[1] == 'Energía' or atr[1] == 'Temperatura' or
+                    atr[1] == 'Mejor Energía'):
                     f_ax.plot(list(range(0, self.epochs)), atr[0])
                     continue
                 f_ax.plot(self.steps_hist, atr[0])
