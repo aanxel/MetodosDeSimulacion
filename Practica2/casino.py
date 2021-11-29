@@ -116,10 +116,17 @@ class SimCasino:
 class CasinoAnnealer(simanneal.Annealer):
     def __init__(self, initial_state=[1/7]*7, n_simulaciones=10000,
                  T_config={'L': 1}, stop_config={'p_acc': 0.1, 'k': 5},
-                 load_state=None, desplazamiento=0.2):
+                 load_state=None, desplazamiento=0.2, threads = False):
         self.T_config = T_config
         self.stop_config = stop_config
         self.n_simulaciones = n_simulaciones
+        if threads == False:
+            self.pool = mp.Pool(1)
+        elif threads == True:
+            self.pool = mp.Pool(mp.cpu_count())
+        elif type(threads):
+            self.pool = mp.Pool(threads)
+
         self.casino = SimCasino()
         self.desplazamiento = desplazamiento  # Define tamaño del entorno
         super().__init__(initial_state=initial_state, load_state=load_state)
@@ -139,7 +146,8 @@ class CasinoAnnealer(simanneal.Annealer):
         self.stop_config['improves'] = 0
 
     def energy(self):
-        _, fichas, _ = self.casino.simular(n_simulaciones=self.n_simulaciones)
+        _, fichas, _ = self.casino.simular(n_simulaciones=self.n_simulaciones,
+                                           pool=self.pool)
         # Número medio de fichas ganadas
         res = -sum([x*y for x, y in enumerate(fichas/self.casino.n_dias)])
         return res
