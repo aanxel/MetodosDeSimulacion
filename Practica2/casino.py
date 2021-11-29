@@ -17,16 +17,23 @@
 #   Máximo 50 partida
 import numpy as np
 import numpy.random as npr
-
+import pickle
 import math
 import time
+import signal
 import sys
 import matplotlib.pyplot as plt
 import simanneal
 from simanneal.anneal import time_string
 from IPython.display import clear_output
 import multiprocessing as mp
+import datetime
 
+def handler(sig, frame):
+    pass
+
+def init_worker():
+    signal.signal(signal.SIGINT, handler)
 
 class SimCasino:
     def __init__(self, n_dias=30, max_partidas=50, max_fichas=150,
@@ -96,7 +103,7 @@ class SimCasino:
         p_part_antes_bancarrota = 0
         n_sims_con_bancarrota = 0
         if pool == None:
-            pool = mp.Pool(mp.cpu_count())
+            pool = mp.Pool(mp.cpu_count(), init_worker)
         results = pool.map(__class__.SimularAux(self), range(0, n_simulaciones))
         for m_p_banc, m_f_dia, m_p_part_prev_bancarrota in results:
             fichas_dia += m_f_dia
@@ -116,17 +123,12 @@ class SimCasino:
 class CasinoAnnealer(simanneal.Annealer):
     def __init__(self, initial_state=[1/7]*7, n_simulaciones=10000,
                  T_config={'L': 1}, stop_config={'p_acc': 0.1, 'k': 5},
-                 load_state=None, desplazamiento=0.2, threads = False):
+                 load_state=None, desplazamiento=0.2, threads=None):
         self.T_config = T_config
         self.stop_config = stop_config
         self.n_simulaciones = n_simulaciones
-        if threads == False:
-            self.pool = mp.Pool(1)
-        elif threads == True:
-            self.pool = mp.Pool(mp.cpu_count())
-        elif type(threads):
-            self.pool = mp.Pool(threads)
-
+        self.threads = threads
+        self.pool = None
         self.casino = SimCasino()
         self.desplazamiento = desplazamiento  # Define tamaño del entorno
         super().__init__(initial_state=initial_state, load_state=load_state)
@@ -143,7 +145,6 @@ class CasinoAnnealer(simanneal.Annealer):
         self.steps_hist = []
         self.stop_config['trials'] = 0
         self.stop_config['accepts'] = 0
-        self.stop_config['improves'] = 0
 
     def energy(self):
         _, fichas, _ = self.casino.simular(n_simulaciones=self.n_simulaciones,
@@ -155,8 +156,8 @@ class CasinoAnnealer(simanneal.Annealer):
     def move(self):
         self.epochs += 1
         a = npr.randint(0, len(self.state))
-        # Incrementamos una probabiliad un porcentaje 
-        self.state[a] = np.maximum(self.state[a] + npr.uniform(-self.desplazamiento, self.desplazamiento), 0)
+        # Modificar a un número aleatorio y normalizar
+        self.state[a] = npr.uniform(0, 1)
         self.state /= np.sum(self.state)
 
     def T_function(self):
@@ -169,6 +170,10 @@ class CasinoAnnealer(simanneal.Annealer):
     def T_configuration(self):
         Tfactor = -math.log(self.Tmax / self.Tmin)
         self.T_config['alfa'] = math.exp(Tfactor / self.steps)
+        # Precompute factor for exponential cooling from Tmax to Tmin
+        if self.Tmin <= 0.0:
+            raise Exception('Exponential cooling requires a minimum "\
+                "temperature greater than zero.')
 
     def stop_criterion(self):
         if self.epochs % (self.T_config['L'] * self.stop_config['k']) == 0:
@@ -177,7 +182,6 @@ class CasinoAnnealer(simanneal.Annealer):
                 print('Se ha cumplido el criterio de parada por convergencia')
             self.stop_config['trials'] = 0
             self.stop_config['accepts'] = 0
-            self.stop_config['improves'] = 0
 
     def anneal(self, updates=None):
         if updates:
@@ -186,26 +190,26 @@ class CasinoAnnealer(simanneal.Annealer):
         self.reset_metrics()
         self.T_configuration()
         ###
-        step = 0
-        self.start = time.time()
-
-        # Precompute factor for exponential cooling from Tmax to Tmin
-        if self.Tmin <= 0.0:
-            raise Exception('Exponential cooling requires a minimum "\
-                "temperature greater than zero.')
-
+        step = self.epochs
         # Note initial state
-        T = self.Tmax
-        E = self.energy()
-        prevState = self.copy_state(self.state)
-        prevEnergy = E
         self.best_state = self.copy_state(self.state)
-        self.best_energy = E
-        trials, accepts, improves = 0, 0, 0
+        self.best_energy = np.inf
+        return self.resume_anneal(step)
+
+    def resume_anneal(self, step):
+        signal.signal(signal.SIGINT, self.set_user_exit)
+        self.pool = mp.Pool(self.threads, init_worker)
+        self.start = time.time()
+        E = self.energy()
+        prevEnergy = E 
+        self.best_energy = min(E, self.best_energy)
+        prevState = self.copy_state(self.state)
+        T = -1
         if self.updates > 0:
             updateWavelength = self.steps / self.updates
-            self.update(step, T, E, None, None)
-
+            self.update(step, T, E, -1, -1)
+        trials, accepts, improves = 0, 0, 0
+        self.user_exit = False
         # Attempt moves to new states
         while step < self.steps and not self.user_exit:
             step += 1
@@ -230,7 +234,6 @@ class CasinoAnnealer(simanneal.Annealer):
                 self.stop_config['accepts'] += 1
                 if dE < 0.0:
                     improves += 1
-                    self.stop_config['improves'] += 1
                 prevState = self.copy_state(self.state)
                 prevEnergy = E
                 if E < self.best_energy:
@@ -247,16 +250,18 @@ class CasinoAnnealer(simanneal.Annealer):
             self.best_E_hist.append(self.best_energy)
             self.stop_criterion()
             ###
-
-        self.state = self.copy_state(self.best_state)
-        if self.save_state_on_exit:
-            self.save_state()
-
-        ###
+        self.save_state()  # Guardar estado de la clase
         print()
-        ###
         # Return best state and energy
         return self.best_state, self.best_energy
+
+    def save_state(self, fname=None):
+        self.pool = None
+        if not fname:
+            date = datetime.datetime.now().strftime("%Y-%m-%dT%Hh%Mm%Ss")
+            fname = date + ".state"
+        with open(fname, "wb") as fh:
+            pickle.dump(self, fh)
 
     def plot_evolution(self):
         if len(self.T_hist) < 2:
