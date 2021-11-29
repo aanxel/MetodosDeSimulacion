@@ -19,13 +19,13 @@ import numpy as np
 import numpy.random as npr
 
 import math
-import random
 import time
 import sys
 import matplotlib.pyplot as plt
 import simanneal
 from simanneal.anneal import time_string
 from IPython.display import clear_output
+import multiprocessing as mp
 
 
 class SimCasino:
@@ -83,18 +83,28 @@ class SimCasino:
                 fichas_dia,
                 p_part_antes_bancarrota)
 
-    def simular(self, n_simulaciones=1000):
+    class SimularAux(object):
+        def __init__(self, simulador):
+            self.simulador = simulador
+
+        def __call__(self, _):
+            return self.simulador.simular_n_dias()
+
+    def simular(self, n_simulaciones=1000, pool=None):
         fichas_dia = np.zeros((self.max_fichas + 35))
         p_bancarrotas = 0
         p_part_antes_bancarrota = 0
         n_sims_con_bancarrota = 0
-        for _ in range(n_simulaciones):
-            m_p_banc, m_f_dia, m_p_part_prev_bancarrota = self.simular_n_dias()
+        if pool == None:
+            pool = mp.Pool(mp.cpu_count())
+        results = pool.map(__class__.SimularAux(self), range(0, n_simulaciones))
+        for m_p_banc, m_f_dia, m_p_part_prev_bancarrota in results:
             fichas_dia += m_f_dia
             p_bancarrotas += m_p_banc
             if m_p_part_prev_bancarrota != 0:
                 p_part_antes_bancarrota += m_p_part_prev_bancarrota
                 n_sims_con_bancarrota += 1
+
         if n_sims_con_bancarrota != 0:
             p_part_antes_bancarrota /= n_sims_con_bancarrota
         else:
@@ -136,9 +146,9 @@ class CasinoAnnealer(simanneal.Annealer):
 
     def move(self):
         self.epochs += 1
-        a = np.random.randint(0, len(self.state))
+        a = npr.randint(0, len(self.state))
         # Incrementamos una probabiliad un porcentaje 
-        self.state[a] = np.maximum(self.state[a] + np.random.uniform(-self.desplazamiento, self.desplazamiento), 0)
+        self.state[a] = np.maximum(self.state[a] + npr.uniform(-self.desplazamiento, self.desplazamiento), 0)
         self.state /= np.sum(self.state)
 
     def T_function(self):
@@ -202,7 +212,7 @@ class CasinoAnnealer(simanneal.Annealer):
                 E += dE
             trials += 1
             self.stop_config['trials'] += 1
-            if dE > 0.0 and math.exp(-dE / T) < random.random():
+            if dE > 0.0 and math.exp(-dE / T) < npr.random():
                 # Restore previous state
                 self.state = self.copy_state(prevState)
                 E = prevEnergy
