@@ -29,13 +29,15 @@ from IPython.display import clear_output
 import multiprocessing as mp
 import datetime
 
-def handler(sig, frame):
+def handler(*args):
     pass
 
 def init_worker():
     signal.signal(signal.SIGINT, handler)
 
 class SimCasino:
+    jugadas = np.array([18/37, 12/37, 6/37, 4/37, 3/37, 2/37, 1/37])
+
     def __init__(self, n_dias=30, max_partidas=50, max_fichas=150,
                  fichas_inicial=30, probs_jugadas=[1/7]*7):
         self.n_dias = n_dias
@@ -43,21 +45,18 @@ class SimCasino:
         self.max_fichas = max_fichas
         self.fichas_inicial = fichas_inicial
         self.probs_jugadas = probs_jugadas
-        self.jugadas = [18/37, 12/37, 6/37, 4/37, 3/37, 2/37, 1/37]
 
     # Devuelve el beneficio de realizar una jugada
     def ganancia_jugada(self, p_ganar):
         if npr.random() < p_ganar:
-            valor_ganancia = int(36 / (p_ganar * 37)) - 1
-            return valor_ganancia
+            return int(36 / (p_ganar * 37)) - 1
         else:
             return -1
 
     # Selecciona una jugada según probs_jugadas y añade el beneficio
     def realizar_jugada(self):
         i_jugada = npr.choice(len(self.jugadas), 1, p=self.probs_jugadas)[0]
-        jugada = self.jugadas[i_jugada]
-        return self.ganancia_jugada(jugada)
+        return self.ganancia_jugada(self.jugadas[i_jugada])
 
     def simular_n_dias(self):
         # Almacena el total de fichas al final de cada día
@@ -120,6 +119,40 @@ class SimCasino:
                 fichas_dia / n_simulaciones,
                 p_part_antes_bancarrota)
 
+
+    class SimularAuxFast(object):
+        def __init__(self, simulador):
+            self.simulador = simulador
+
+        def __call__(self, _):
+            return self.simulador.simular_n_dias_fast()
+
+    def simular_n_dias_fast(self):
+        "Versión que solo calcula promedio de fichas"
+        # Almacena el total de fichas al final de cada día
+        fichas_dia = 0
+        for _ in range(self.n_dias):
+            # Repostar fichas
+            fichas_hoy = self.fichas_inicial
+            # Número de partidas jugadas hoy
+            partidas_hoy = 0
+            while (fichas_hoy > 0 and fichas_hoy < self.max_fichas and
+                   partidas_hoy < self.max_partidas):
+                # Jugar una partida
+                fichas_hoy += self.realizar_jugada()
+                partidas_hoy += 1
+            fichas_dia += fichas_hoy
+        return fichas_dia / self.n_dias
+
+    def simular_fast(self, n_simulaciones=1000, pool=None):
+        "Versión de simular que solo calcula el promedio de fichas"
+        if pool is None:
+            pool = mp.Pool(mp.cpu_count(), init_worker)
+        results = pool.map(__class__.SimularAuxFast(self),
+                           range(0, n_simulaciones))
+        return sum(results) / len(results)
+
+
 class CasinoAnnealer(simanneal.Annealer):
     def __init__(self, initial_state=[1/7]*7, n_simulaciones=10000,
                  T_config={'L': 1}, stop_config={'p_acc': 0.1, 'k': 5},
@@ -147,11 +180,8 @@ class CasinoAnnealer(simanneal.Annealer):
         self.stop_config['accepts'] = 0
 
     def energy(self):
-        _, fichas, _ = self.casino.simular(n_simulaciones=self.n_simulaciones,
-                                           pool=self.pool)
-        # Número medio de fichas ganadas
-        res = -sum([x*y for x, y in enumerate(fichas/self.casino.n_dias)])
-        return res
+        self.casino.probs_jugadas = self.state
+        return -1* self.casino.simular_fast(self.n_simulaciones, self.pool)
 
     def move(self):
         self.epochs += 1
