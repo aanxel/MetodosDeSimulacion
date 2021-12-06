@@ -37,6 +37,7 @@ def init_worker():
 
 class SimCasino:
     jugadas = np.array([18/37, 12/37, 6/37, 4/37, 3/37, 2/37, 1/37])
+    ganancias_jugadas = (36 / (jugadas * 37)).astype(int) - 1
 
     def __init__(self, n_dias=30, max_partidas=50, max_fichas=150,
                  fichas_inicial=30, probs_jugadas=[1/7]*7):
@@ -46,17 +47,40 @@ class SimCasino:
         self.fichas_inicial = fichas_inicial
         self.probs_jugadas = probs_jugadas
 
-    # Devuelve el beneficio de realizar una jugada
-    def ganancia_jugada(self, p_ganar):
-        if npr.random() < p_ganar:
-            return int(36 / (p_ganar * 37)) - 1
+        
+    def compilar_probabilidades(self):
+        "Compilar array de probabilidades para seleccion mas eficiente"
+        p_jugadas = list(enumerate(self.probs_jugadas))
+        p_jugadas.sort(key=lambda e: -1* e[1])  # Ordenar por prob mayor a menor
+        # Probabilidades ordenadas de mayor a menor
+        self.probs_jugadas_f = np.array([e[1] for e in p_jugadas])
+        # Asociacion a jugada original dado el indice en el array ordenado
+        self.jugada_f_a_jugada = np.array([e[0] for e in p_jugadas])
+        
+    # Selecciona una jugada según probs_jugadas y devuelve el beneficio
+    def realizar_jugada(self):
+        i_jugada = npr.choice(len(self.jugadas), p=self.probs_jugadas)
+        if npr.random() < self.jugadas[i_jugada]:
+            return self.ganancias_jugadas[i_jugada]
         else:
             return -1
-
-    # Selecciona una jugada según probs_jugadas y añade el beneficio
-    def realizar_jugada(self):
-        i_jugada = npr.choice(len(self.jugadas), 1, p=self.probs_jugadas)[0]
-        return self.ganancia_jugada(self.jugadas[i_jugada])
+        
+    def realizar_jugada_fast(self):
+        "Versión que emplea un vector de probabilidades ordenado"
+        "Requiere una llamada previa a compilar_probabilidades()"
+        # Elegir jugada de forma más eficiente
+        # https://tinyurl.com/2p8p4hp3
+        x = npr.random()
+        cum = 0
+        for i_jugada, p in enumerate(self.probs_jugadas_f):
+            cum += p
+            if x < cum:
+                break
+        i_jugada = self.jugada_f_a_jugada[i_jugada]
+        if npr.random() < self.jugadas[i_jugada]:
+            return self.ganancias_jugadas[i_jugada]
+        else:
+            return -1
 
     def simular_n_dias(self):
         # Almacena el total de fichas al final de cada día
@@ -74,7 +98,7 @@ class SimCasino:
             while (fichas > 0 and fichas < self.max_fichas and
                    partidas_hoy < self.max_partidas):
                 # Jugar una partida
-                fichas += self.realizar_jugada()
+                fichas += self.realizar_jugada_fast()
                 partidas_hoy += 1
             fichas_dia[fichas] += 1
             if fichas == 0:
@@ -97,6 +121,7 @@ class SimCasino:
             return self.simulador.simular_n_dias()
 
     def simular(self, n_simulaciones=1000, pool=None):
+        self.compilar_probabilidades()
         fichas_dia = np.zeros((self.max_fichas + 35))
         p_bancarrotas = 0
         p_part_antes_bancarrota = 0
@@ -119,7 +144,6 @@ class SimCasino:
                 fichas_dia / n_simulaciones,
                 p_part_antes_bancarrota)
 
-
     class SimularAuxFast(object):
         def __init__(self, simulador):
             self.simulador = simulador
@@ -139,13 +163,15 @@ class SimCasino:
             while (fichas_hoy > 0 and fichas_hoy < self.max_fichas and
                    partidas_hoy < self.max_partidas):
                 # Jugar una partida
-                fichas_hoy += self.realizar_jugada()
+                fichas_hoy += self.realizar_jugada_fast()
                 partidas_hoy += 1
             fichas_dia += fichas_hoy
         return fichas_dia / self.n_dias
+ 
 
     def simular_fast(self, n_simulaciones=1000, pool=None):
         "Versión de simular que solo calcula el promedio de fichas"
+        self.compilar_probabilidades()
         if pool is None:
             pool = mp.Pool(mp.cpu_count(), init_worker)
         results = pool.map(__class__.SimularAuxFast(self),
