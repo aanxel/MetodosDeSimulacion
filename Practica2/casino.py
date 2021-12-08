@@ -84,7 +84,7 @@ class SimCasino:
 
     def simular_n_dias(self):
         # Almacena el total de fichas al final de cada día
-        fichas_dia = np.zeros((self.max_fichas + 35))
+        fichas_dia = np.zeros((self.max_fichas + self.ganancias_jugadas[-1]))
         # Almacena total de días en bancarrota
         n_bancarrotas = 0
         # Número total de partidas jugadas cada dia terminado en bancarrota
@@ -122,7 +122,7 @@ class SimCasino:
 
     def simular(self, n_simulaciones=1000, pool=None):
         self.compilar_probabilidades()
-        fichas_dia = np.zeros((self.max_fichas + 35))
+        fichas_dia = np.zeros((self.max_fichas + self.ganancias_jugadas[-1]))
         p_bancarrotas = 0
         p_part_antes_bancarrota = 0
         n_sims_con_bancarrota = 0
@@ -178,11 +178,37 @@ class SimCasino:
                            range(0, n_simulaciones))
         return sum(results) / len(results)
 
+    def matriz_transiciones(self, probs):
+        n_estados = self.max_fichas + self.ganancias_jugadas[-1]
+        M = np.zeros((n_estados, n_estados))
+        p_perder = sum((1 - self.jugadas[i])*probs[i]
+                       for i in range(len(self.jugadas)))
+        ps_ganar = [self.jugadas[i]*probs[i]
+                    for i in range(len(self.jugadas))]
+        for i in range(n_estados):
+            # Estados de abandono
+            if i == 0 or i >= self.max_fichas:
+                M[i][i] = 1
+            else:
+                for j in range(len(probs)):
+                    M[i][i + self.ganancias_jugadas[j]] = ps_ganar[j]
+                M[i][i-1] = p_perder
+        return M
+
+    def simular_m_transiciones(self):
+        M = self.matriz_transiciones(self.probs_jugadas)
+        s_0 = np.zeros(M.shape[0])
+        s_0[self.fichas_inicial] = 1
+        M_s = np.dot(s_0, np.linalg.matrix_power(M, self.max_partidas))
+        return M_s, sum(p * f for f,p in enumerate(M_s))
+
 
 class CasinoAnnealer(simanneal.Annealer):
     def __init__(self, initial_state=[1/7]*7, n_simulaciones=10000,
                  T_config={'L': 1}, stop_config={'p_acc': 0.1, 'k': 5},
-                 load_state=None, desplazamiento=0.2, threads=None):
+                 load_state=None, desplazamiento=0.2, threads=None,
+                 save_state=True):
+        self.save_state_on_exit = save_state
         self.T_config = T_config
         self.stop_config = stop_config
         self.n_simulaciones = n_simulaciones
@@ -207,7 +233,9 @@ class CasinoAnnealer(simanneal.Annealer):
 
     def energy(self):
         self.casino.probs_jugadas = self.state
-        return -1* self.casino.simular_fast(self.n_simulaciones, self.pool)
+        if self.n_simulaciones:
+            return -1* self.casino.simular_fast(self.n_simulaciones, self.pool)
+        return -1 * self.casino.simular_m_transiciones()[1]
 
     def move(self):
         self.epochs += 1
@@ -306,7 +334,8 @@ class CasinoAnnealer(simanneal.Annealer):
             self.best_E_hist.append(self.best_energy)
             self.stop_criterion()
             ###
-        self.save_state()  # Guardar estado de la clase
+        if self.save_state_on_exit:
+            self.save_state()  # Guardar estado de la clase
         print()
         # Return best state and energy
         return self.best_state, self.best_energy
